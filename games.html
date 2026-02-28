@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sava Games Menu</title>
+  <style>
+    body{margin:0;font-family:system-ui;background:#090b1a;color:#fff}
+    .wrap{width:min(980px,calc(100% - 20px));margin:18px auto}
+    .top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+    h1{margin:0;color:#ffe700}
+    .back{background:#ffe700;color:#111;text-decoration:none;padding:8px 12px;border-radius:999px;font-weight:800}
+    .grid{margin-top:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+    .card{background:#151a33;border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:14px}
+    .card h2{margin:0 0 8px}
+    .card p{opacity:.9;min-height:52px}
+    .go{display:inline-block;background:#00ffc8;color:#062d24;text-decoration:none;padding:9px 12px;border-radius:10px;font-weight:800}
+    .rules{border:0;background:#ff65d8;color:#19112b;padding:9px 12px;border-radius:10px;font-weight:900;cursor:pointer}
+
+    .modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.66);padding:12px}
+    .box{width:min(700px,100%);background:#fff;color:#111;border-radius:14px;padding:14px}
+    .close{border:0;background:#ececec;padding:8px 10px;border-radius:10px;font-weight:800;cursor:pointer}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <h1>🎮 SAVA GAMES</h1>
+      <div style="display:flex;gap:8px">
+        <button class="rules" id="openRules">Rules / Controls</button>
+        <a class="back" href="./index.html">Back</a>
+      </div>
+    </div>
+    <div class="grid">
+      <article class="card">
+        <h2>Sava Tetris</h2>
+        <p>Classic falling blocks, but every block uses Sava photos.</p>
+        <a class="go" href="./tetris.html">Play Tetris</a>
+      </article>
+      <article class="card">
+        <h2>Space Sava Dodge</h2>
+        <p>Sava-ball starts in the center. Dodge giraffes from every direction.</p>
+        <a class="go" href="./space-dodge.html">Play Dodge</a>
+      </article>
+    </div>
+  </div>
+
+  <div class="modal" id="rulesModal">
+    <div class="box">
+      <h2>Game Controls</h2>
+      <h3>Sava Tetris</h3>
+      <ul>
+        <li>Desktop: Arrow keys + Space (hard drop)</li>
+        <li>Mobile: on-screen buttons (left, rotate, right, soft drop, hard drop)</li>
+      </ul>
+      <h3>Space Sava Dodge</h3>
+      <ul>
+        <li>Desktop: Arrow keys / WASD for free movement</li>
+        <li>Mobile: drag anywhere to move in any direction</li>
+        <li>Giraffes spawn from all angles and speed up over time</li>
+      </ul>
+      <button class="close" id="closeRules">Close</button>
+    </div>
+  </div>
+
+  <script>
+    const m=document.getElementById('rulesModal');
+    document.getElementById('openRules').onclick=()=>m.style.display='grid';
+    document.getElementById('closeRules').onclick=()=>m.style.display='none';
+    m.onclick=(e)=>{if(e.target===m)m.style.display='none';};
+  </script>
+  <script type="module">
+    import { inject } from "https://esm.sh/@vercel/analytics";
+    inject();
+  </script>
+</body>
+</html>
