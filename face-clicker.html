@@ -2,4 +2,5 @@
 function spawn(){if(!running)return;const i=document.createElement('img');i.className='face';i.src=imgs[(Math.random()*imgs.length)|0];const s=68+Math.random()*76;i.style.width=s+'px';i.style.height=s+'px';i.style.left=Math.random()*(Math.max(1,area.clientWidth-s))+'px';i.style.top=Math.random()*(Math.max(1,area.clientHeight-s))+'px';const hit=()=>{if(!running)return;score+=10;i.remove();upd();};i.onclick=hit;i.ontouchstart=(e)=>{e.preventDefault();hit();};area.appendChild(i);setTimeout(()=>i.remove(),1050+Math.random()*700)}
 function stopRound(){running=false;clearInterval(sp);clearInterval(tm);record(score);final.textContent='Final score: '+score;end.style.display='grid'}
 function start(){end.style.display='none';Array.from(area.querySelectorAll('.face')).forEach(n=>n.remove());score=0;t=30;running=true;upd();sp=setInterval(spawn,180);tm=setInterval(()=>{t--;upd();if(t<=0)stopRound();},1000)}
-document.getElementById('restart').onclick=start;document.getElementById('again').onclick=start;start();</script></body></html>
+document.getElementById('restart').onclick=start;document.getElementById('again').onclick=start;start();</script><script type="module">import { inject } from "https://esm.sh/@vercel/analytics"; inject();</script>
+</body></html>

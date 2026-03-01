@@ -20,4 +20,5 @@ addEventListener('keydown',e=>{if(e.key==='p'||e.key==='P'){paused=!paused;retur
 function bindHold(id,fn,ms=85){const el=document.getElementById(id);let t=0;const start=()=>{fn();clearInterval(t);t=setInterval(fn,ms)};const stop=()=>{clearInterval(t)};el.onpointerdown=start;el.onpointerup=stop;el.onpointercancel=stop;el.onpointerleave=stop;el.onclick=fn;}
 bindHold('left',left,55);bindHold('right',right,55);bindHold('down',down,30);document.getElementById('rot').onclick=rot;document.getElementById('hard').onclick=hard;document.getElementById('pauseBtn').onclick=()=>paused=!paused;document.getElementById('restartBtn').onclick=()=>reset();
 reset();requestAnimationFrame(loop);
-</script></body></html>
+</script><script type="module">import { inject } from "https://esm.sh/@vercel/analytics"; inject();</script>
+</body></html>

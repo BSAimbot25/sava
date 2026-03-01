@@ -48,4 +48,5 @@ function paint(){document.querySelectorAll('.product').forEach((el,i)=>el.classL
 products.forEach(p=>{const d=document.createElement('button');d.className='product';d.type='button';d.innerHTML=`<div class='pname'>${p.name}</div><div class='ptag'>${p.cat}</div>`;d.onclick=()=>{selectedProduct=p;paint()};productRoot.appendChild(d)});
 images.forEach(img=>{const d=document.createElement('button');d.className='thumb';d.type='button';d.innerHTML=`<img src='./${img}' alt='${img}'>`;d.onclick=()=>{selectedImage=img;paint()};thumbsRoot.appendChild(d)});
 paint();
-</script></body></html>
+</script><script type="module">import { inject } from "https://esm.sh/@vercel/analytics"; inject();</script>
+</body></html>

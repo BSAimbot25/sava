@@ -5,4 +5,5 @@ function reveal(c){c.innerHTML=`<img src='${c.dataset.src}' alt='face'>`}functio
 function done(){const sec=(Date.now()-start)/1000;const score=Math.max(1,Math.floor(5200-(moves*55+sec*22)));record(score);setTimeout(()=>{if(confirm('You cleared Face Memory! Score: '+score+'\nPlay again?')) init();},120)}
 function flip(c){if(lock||open.includes(c)||c.dataset.done==='1')return;reveal(c);open.push(c);if(open.length===2){moves++;const[a,b]=open;if(a.dataset.src===b.dataset.src){a.dataset.done=b.dataset.done='1';found++;open=[];hudUp();if(found===8)done()}else{lock=true;setTimeout(()=>{hide(a);hide(b);open=[];lock=false;hudUp();},550)}}}
 function init(){deck=mkDeck();open=[];lock=false;found=0;moves=0;start=Date.now();g.innerHTML='';deck.forEach((src,idx)=>{const c=document.createElement('button');c.className='card';c.dataset.src=src;c.dataset.i=idx;c.innerHTML='<span class="back">?</span>';c.onclick=()=>flip(c);g.appendChild(c)});hudUp()}
-document.getElementById('restart').onclick=init;init();</script></body></html>
+document.getElementById('restart').onclick=init;init();</script><script type="module">import { inject } from "https://esm.sh/@vercel/analytics"; inject();</script>
+</body></html>
