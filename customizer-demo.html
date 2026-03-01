@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sava Product Customizer Demo</title>
+  <style>
+    :root{--bg:#0b1020;--card:#171f3a;--text:#fff;--muted:#a8b3d9;--accent:#ffe700;--ok:#00ffc8}
+    *{box-sizing:border-box} body{margin:0;font-family:system-ui;background:var(--bg);color:var(--text)}
+    .top{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid #2a3357;background:#101833}
+    .btn{background:var(--accent);color:#111;text-decoration:none;padding:8px 12px;border-radius:999px;font-weight:800}
+    .wrap{width:min(1200px,calc(100% - 24px));margin:16px auto;display:grid;grid-template-columns:1.15fr .85fr;gap:14px}
+    .panel{background:var(--card);border:1px solid #2a3357;border-radius:14px;padding:12px}
+    h2{margin:0 0 10px}.muted{color:var(--muted)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+    .product{background:#101833;border:1px solid #2b3762;border-radius:12px;padding:10px;cursor:pointer}
+    .product.active{outline:2px solid var(--accent)}
+    .preview{display:grid;place-items:center;min-height:420px;background:linear-gradient(180deg,#0d1330,#0b1020);border-radius:12px;position:relative;overflow:hidden}
+    .tee,.mug,.case{position:relative;display:none}
+    .tee.active,.mug.active,.case.active{display:block}
+    .tee{width:290px;height:330px;background:#f2f2f2;border-radius:20px 20px 30px 30px;box-shadow:0 12px 25px #0008}
+    .tee:before,.tee:after{content:'';position:absolute;top:24px;width:70px;height:90px;background:#f2f2f2;border-radius:18px}
+    .tee:before{left:-52px;transform:rotate(20deg)} .tee:after{right:-52px;transform:rotate(-20deg)}
+    .mug{width:300px;height:210px;background:#f8f8f8;border-radius:18px;box-shadow:0 12px 25px #0008}
+    .mug:after{content:'';position:absolute;right:-44px;top:54px;width:58px;height:94px;border:12px solid #ececec;border-left:none;border-radius:0 35px 35px 0}
+    .case{width:210px;height:390px;background:#111;border-radius:28px;border:3px solid #222;box-shadow:0 12px 25px #0008}
+    .print{position:absolute;overflow:hidden;background:#fff;border:1px dashed #0003}
+    .tee .print{left:72px;top:100px;width:146px;height:162px}
+    .mug .print{left:56px;top:30px;width:190px;height:150px}
+    .case .print{left:18px;top:52px;width:170px;height:300px;border-radius:16px}
+    .print img{width:100%;height:100%;object-fit:cover;display:block}
+    .thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(74px,1fr));gap:8px;margin-top:8px}
+    .thumb{border:2px solid transparent;border-radius:9px;overflow:hidden;cursor:pointer;height:74px}
+    .thumb.active{border-color:var(--ok)} .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+    .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.pill{background:#101833;border:1px solid #2b3762;border-radius:999px;padding:6px 10px;font-size:.9rem}
+    @media (max-width:980px){.wrap{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <header class="top">
+    <strong>Customizer Demo</strong>
+    <a class="btn" href="./merch.html">Back to Merch</a>
+  </header>
+
+  <main class="wrap">
+    <section class="panel">
+      <h2>1) Pick product</h2>
+      <div class="muted">Demo flow: click product → choose design image → live preview updates.</div>
+      <div class="grid" id="products"></div>
+
+      <h2 style="margin-top:14px">2) Pick design image</h2>
+      <div class="thumbs" id="thumbs"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Live Preview</h2>
+      <div class="preview">
+        <div class="tee active" id="v-tee"><div class="print"><img id="img-tee" alt="preview"></div></div>
+        <div class="mug" id="v-mug"><div class="print"><img id="img-mug" alt="preview"></div></div>
+        <div class="case" id="v-case"><div class="print"><img id="img-case" alt="preview"></div></div>
+      </div>
+      <div class="row">
+        <div class="pill">Selected product: <b id="chosenProduct">Sava Tee</b></div>
+        <div class="pill">Selected image: <b id="chosenImage">1.jpg</b></div>
+      </div>
+      <p class="muted" style="margin-top:10px">This is a frontend demo only. Real checkout wiring can be connected after approval.</p>
+    </section>
+  </main>
+
+<script>
+const products=[
+  {name:'Sava Tee',view:'tee'},
+  {name:'Sava Mug',view:'mug'},
+  {name:'Sava Phone Case',view:'case'},
+  {name:'Winchester Tee',view:'tee'},
+  {name:'Saveliy Tee',view:'tee'},
+  {name:'Sava Tote Bag',view:'tee'}
+];
+const images=[...Array(12)].map((_,i)=>`${i+1}.jpg`);
+
+let selectedProduct=products[0], selectedImage=images[0];
+const productRoot=document.getElementById('products');
+const thumbsRoot=document.getElementById('thumbs');
+
+function paint(){
+  document.querySelectorAll('.product').forEach((el,i)=>el.classList.toggle('active',products[i]===selectedProduct));
+  document.querySelectorAll('.thumb').forEach((el,i)=>el.classList.toggle('active',images[i]===selectedImage));
+  document.querySelectorAll('.tee,.mug,.case').forEach(el=>el.classList.remove('active'));
+  document.getElementById(`v-${selectedProduct.view}`).classList.add('active');
+  ['tee','mug','case'].forEach(v=>document.getElementById(`img-${v}`).src=`./${selectedImage}`);
+  document.getElementById('chosenProduct').textContent=selectedProduct.name;
+  document.getElementById('chosenImage').textContent=selectedImage;
+}
+
+products.forEach((p)=>{
+  const d=document.createElement('button'); d.className='product'; d.type='button';
+  d.innerHTML=`<strong>${p.name}</strong><div class='muted'>Click to preview custom image</div>`;
+  d.onclick=()=>{selectedProduct=p;paint()};
+  productRoot.appendChild(d);
+});
+images.forEach((img)=>{
+  const d=document.createElement('button'); d.className='thumb'; d.type='button';
+  d.innerHTML=`<img src='./${img}' alt='${img}'>`;
+  d.onclick=()=>{selectedImage=img;paint()};
+  thumbsRoot.appendChild(d);
+});
+paint();
+</script>
+</body>
+</html>
