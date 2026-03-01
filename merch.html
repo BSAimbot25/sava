@@ -1,22 +1,113 @@
 <!doctype html>
-<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>SillySava Merch</title>
-<style>
-body{margin:0;font-family:system-ui;background:#0b0b12;color:#fff}
-.top{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:#121427;border-bottom:1px solid rgba(255,255,255,.15)}
-.logo{font-weight:900;color:#ffe700;font-size:1.2rem}
-.back{background:#ffe700;color:#111;text-decoration:none;padding:8px 12px;border-radius:999px;font-weight:800}
-.wrap{width:min(900px,calc(100% - 24px));margin:24px auto}
-.card{background:#171b33;border:1px solid rgba(255,255,255,.16);border-radius:14px;padding:20px;text-align:center}
-.card h1{margin:0 0 10px}
-.card p{opacity:.85;line-height:1.5}
-</style></head><body>
-<header class="top"><div class="logo">SILLYSAVA MERCH</div><a class="back" href="./index.html">Back</a></header>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SillySava Merch</title>
+  <style>
+    body{margin:0;font-family:system-ui;background:#0b0b12;color:#fff}
+    .top{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:#121427;border-bottom:1px solid rgba(255,255,255,.15)}
+    .logo{font-weight:900;color:#ffe700;font-size:1.2rem}
+    .back{background:#ffe700;color:#111;text-decoration:none;padding:8px 12px;border-radius:999px;font-weight:800}
+    .wrap{width:min(1200px,calc(100% - 20px));margin:16px auto}
+    .note{background:#171b33;border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:10px 12px;margin-bottom:12px;color:#d9dcff}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+    .card{background:#171b33;border:1px solid rgba(255,255,255,.16);border-radius:14px;overflow:hidden}
+    .imgs{display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px solid rgba(255,255,255,.12)}
+    .imgs .shot{position:relative}
+    .imgs img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:#0f1224}
+    .label{position:absolute;left:8px;top:8px;background:rgba(0,0,0,.65);padding:4px 8px;border-radius:999px;font-size:.72rem;font-weight:700}
+    .meta{padding:10px}
+    .meta h3{margin:0 0 6px;font-size:1rem}
+    .sub{opacity:.85;font-size:.9rem;margin-bottom:4px}
+    .go{display:inline-block;margin-top:8px;background:#00ffc8;color:#062d24;text-decoration:none;padding:8px 12px;border-radius:10px;font-weight:800}
+  </style>
+</head>
+<body>
+<header class="top">
+  <div class="logo">SILLYSAVA MERCH</div>
+  <a class="back" href="./index.html">Back</a>
+</header>
+
 <main class="wrap">
-  <section class="card">
-    <h1>Merch Store Updating</h1>
-    <p>Products are being refreshed and connected to checkout.<br/>Please check back in a few minutes.</p>
-  </section>
+  <div class="note">
+    Curated for cheaper-but-good options (men focus) + 2 baby joke items.<br/>
+    Every product has front and back shown clearly. Pricing kept as requested.
+  </div>
+
+  <section class="grid" id="grid"></section>
 </main>
+
+<script>
+const products = [
+  {
+    title:'Master Drop Men Tee',
+    variants:100,
+    front:'https://images-api.printify.com/mockup/69a4351a46730b56700a60dc/38191/97992/master-drop-men-tee.jpg?camera_label=front',
+    back:'https://images-api.printify.com/mockup/69a4351a46730b56700a60dc/38191/97993/master-drop-men-tee.jpg?camera_label=back',
+    url:'https://pouchmastersava.printify.me/product/27107159'
+  },
+  {
+    title:'Master Drop Men Hoodie',
+    variants:40,
+    front:'https://images-api.printify.com/mockup/69a436897fc2996b8d0ab4eb/63772/4765/master-drop-men-hoodie.jpg?camera_label=front',
+    back:'https://images-api.printify.com/mockup/69a436897fc2996b8d0ab4eb/63772/4770/master-drop-men-hoodie.jpg?camera_label=back',
+    url:'https://pouchmastersava.printify.me/product/27107301'
+  },
+  {
+    title:'Master Drop Men Sweatshirt',
+    variants:45,
+    front:'https://images-api.printify.com/mockup/69a435a83b12a90c8e08b30c/68016/99286/master-drop-men-sweatshirt.jpg?camera_label=front',
+    back:'https://images-api.printify.com/mockup/69a435a83b12a90c8e08b30c/68016/99287/master-drop-men-sweatshirt.jpg?camera_label=back',
+    url:'https://pouchmastersava.printify.me/product/27107184'
+  },
+  {
+    title:'Master Classic Sweatshirt',
+    variants:100,
+    front:'https://images-api.printify.com/mockup/69a435cf7fc2996b8d0ab499/36121/234/master-classic-sweatshirt.jpg?camera_label=front',
+    back:'https://images-api.printify.com/mockup/69a435cf7fc2996b8d0ab499/36121/235/master-classic-sweatshirt.jpg?camera_label=back',
+    url:'https://pouchmastersava.printify.me/product/27107191'
+  },
+  {
+    title:'Master Oversized Tee',
+    variants:35,
+    front:'https://images-api.printify.com/mockup/69a435b57ab6ca0074090994/156064/118466/master-oversized-tee.jpg?camera_label=front-side',
+    back:'https://images-api.printify.com/mockup/69a435b57ab6ca0074090994/156064/118467/master-oversized-tee.jpg?camera_label=back-side',
+    url:'https://pouchmastersava.printify.me/product/27107185'
+  },
+  {
+    title:'Joke Baby Tee',
+    variants:13,
+    front:'https://images-api.printify.com/mockup/69a435fa1ec5ca402c03737a/95962/81229/joke-baby-tee.jpg?camera_label=front',
+    back:'https://images-api.printify.com/mockup/69a435fa1ec5ca402c03737a/95962/81241/joke-baby-tee.jpg?camera_label=back',
+    url:'https://pouchmastersava.printify.me/product/27107208'
+  },
+  {
+    title:'Joke Toddler Tee',
+    variants:2,
+    front:'https://images-api.printify.com/mockup/69a436087ab6ca00740909bb/72048/100703/joke-toddler-tee.jpg?camera_label=front',
+    back:'https://images-api.printify.com/mockup/69a436087ab6ca00740909bb/72048/100704/joke-toddler-tee.jpg?camera_label=back',
+    url:'https://pouchmastersava.printify.me/product/27107209'
+  }
+];
+
+const grid = document.getElementById('grid');
+products.forEach(p => {
+  const card = document.createElement('article');
+  card.className = 'card';
+  card.innerHTML = `
+    <div class="imgs">
+      <div class="shot"><img src="${p.front}" alt="${p.title} front" loading="lazy"/><span class="label">Front</span></div>
+      <div class="shot"><img src="${p.back}" alt="${p.title} back" loading="lazy"/><span class="label">Back</span></div>
+    </div>
+    <div class="meta">
+      <h3>${p.title}</h3>
+      <div class="sub">Variants/Sizes: ${p.variants}</div>
+      <a class="go" href="${p.url}" target="_blank" rel="noopener">Buy Now</a>
+    </div>`;
+  grid.appendChild(card);
+});
+</script>
 <script type="module">import { inject } from "https://esm.sh/@vercel/analytics"; inject();</script>
-</body></html>
+</body>
+</html>
