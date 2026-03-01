@@ -12,54 +12,40 @@ canvas{background:#0f1530;border:2px solid #fff;border-radius:10px;max-width:100
 .cbtn{border:0;border-radius:10px;background:#1f2a55;color:#fff;padding:10px 0;font-weight:900;font-size:1rem}
 </style></head><body>
 <div class="page">
-  <div class="top"><a class="btn" href="./games.html">← Menu</a><div class="score" id="score">Score: 0</div></div>
+  <div class="top"><a class="btn" href="./games.html">← Menu</a><div class="score" id="score">Score: 0 | Best: 0</div></div>
   <div class="stage"><canvas id="c"></canvas></div>
   <div class="controls">
-    <button class="cbtn" id="left">◀</button>
-    <button class="cbtn" id="rot">⟳</button>
-    <button class="cbtn" id="right">▶</button>
-    <button class="cbtn" id="down">▼</button>
-    <button class="cbtn" id="hard">⤓</button>
+    <button class="cbtn" id="left">◀</button><button class="cbtn" id="rot">⟳</button><button class="cbtn" id="right">▶</button><button class="cbtn" id="down">▼</button><button class="cbtn" id="hard">⤓</button>
   </div>
 </div>
 <script>
 const cv=document.getElementById('c'),ctx=cv.getContext('2d');
-const COLS=10,ROWS=20;
-let S=24;
+const COLS=10,ROWS=20;let S=24;
 const board=Array.from({length:ROWS},()=>Array(COLS).fill(0));
 const scoreEl=document.getElementById('score');
-let score=0,drop=0,last=0,speed=580;
+let score=0,drop=0,last=0,speed=360; // faster start
 const imgs=['1.jpg','2.jpg','3.jpg','4.jpg','5.jpg','6.jpg','7.jpg','8.jpg','9.jpg','10.jpg','11.jpg','12.jpg'].map(s=>{const i=new Image();i.src='./'+s;return i;});
 const SHAPES=[[[1,1,1,1]],[[1,1],[1,1]],[[0,1,0],[1,1,1]],[[1,0,0],[1,1,1]],[[0,0,1],[1,1,1]],[[0,1,1],[1,1,0]],[[1,1,0],[0,1,1]]];
-function fitCanvas(){
-  const h=window.innerHeight-130; // top + controls + gaps
-  const w=window.innerWidth-20;
-  S=Math.max(14,Math.floor(Math.min(w/COLS,h/ROWS,30)));
-  cv.width=COLS*S; cv.height=ROWS*S;
-}
-fitCanvas(); addEventListener('resize',fitCanvas);
+const SCORE_KEY='sava_scores';
+function scores(){try{return Object.assign({tetris:0,dodge:0,snake:0},JSON.parse(localStorage.getItem(SCORE_KEY)||'{}'));}catch{return {tetris:0,dodge:0,snake:0};}}
+function saveBest(v){const s=scores();if(v>s.tetris){s.tetris=v;localStorage.setItem(SCORE_KEY,JSON.stringify(s));}}
+function updateHud(){scoreEl.textContent=`Score: ${score} | Best: ${Math.floor(scores().tetris||0)}`;}
 
+function fitCanvas(){const h=window.innerHeight-130,w=window.innerWidth-20;S=Math.max(14,Math.floor(Math.min(w/COLS,h/ROWS,30)));cv.width=COLS*S;cv.height=ROWS*S;}
+fitCanvas(); addEventListener('resize',fitCanvas);
 function randPiece(){const m=SHAPES[(Math.random()*SHAPES.length)|0].map(r=>[...r]);return{x:3,y:0,m,img:imgs[(Math.random()*imgs.length)|0]};}
 let p=randPiece();
-function collides(nx=p.x,ny=p.y,nm=p.m){for(let y=0;y<nm.length;y++)for(let x=0;x<nm[y].length;x++)if(nm[y][x]){const bx=nx+x,by=ny+y; if(bx<0||bx>=COLS||by>=ROWS|| (by>=0&&board[by][bx])) return true;} return false;}
-function merge(){for(let y=0;y<p.m.length;y++)for(let x=0;x<p.m[y].length;x++)if(p.m[y][x]) board[p.y+y][p.x+x]={img:p.img};}
-function clearLines(){let lines=0;for(let y=ROWS-1;y>=0;y--){if(board[y].every(Boolean)){board.splice(y,1);board.unshift(Array(COLS).fill(0));lines++;y++;}}
-if(lines){score+=lines*100;scoreEl.textContent='Score: '+score;speed=Math.max(120,speed-12*lines);}}
+function collides(nx=p.x,ny=p.y,nm=p.m){for(let y=0;y<nm.length;y++)for(let x=0;x<nm[y].length;x++)if(nm[y][x]){const bx=nx+x,by=ny+y;if(bx<0||bx>=COLS||by>=ROWS||(by>=0&&board[by][bx]))return true;}return false;}
+function merge(){for(let y=0;y<p.m.length;y++)for(let x=0;x<p.m[y].length;x++)if(p.m[y][x])board[p.y+y][p.x+x]={img:p.img};}
+function clearLines(){let lines=0;for(let y=ROWS-1;y>=0;y--){if(board[y].every(Boolean)){board.splice(y,1);board.unshift(Array(COLS).fill(0));lines++;y++;}}if(lines){score+=lines*120;saveBest(score);updateHud();speed=Math.max(70,speed-22*lines);}}
 function rotate(m){return m[0].map((_,i)=>m.map(r=>r[i]).reverse());}
-function resetIfDead(){if(collides(p.x,p.y,p.m)){for(let r of board)r.fill(0);score=0;speed=580;scoreEl.textContent='Score: 0';}}
-function tick(ts){const dt=ts-last;last=ts;drop+=dt;if(drop>speed){drop=0;if(!collides(p.x,p.y+1))p.y++;else{merge();clearLines();p=randPiece();resetIfDead();}}
-draw();requestAnimationFrame(tick);}requestAnimationFrame(tick);
-function drawCell(x,y,cell){if(!cell)return;ctx.drawImage(cell.img,x*S,y*S,S,S);ctx.strokeStyle='rgba(255,255,255,.28)';ctx.strokeRect(x*S,y*S,S,S);}
+function resetIfDead(){if(collides(p.x,p.y,p.m)){saveBest(score);for(let r of board)r.fill(0);score=0;speed=360;updateHud();}}
+function tick(ts){const dt=ts-last;last=ts;drop+=dt;if(drop>speed){drop=0;if(!collides(p.x,p.y+1))p.y++;else{merge();clearLines();p=randPiece();resetIfDead();}}draw();requestAnimationFrame(tick);}requestAnimationFrame(tick);
+function drawCell(x,y,cell){if(!cell)return;ctx.drawImage(cell.img,x*S,y*S,S,S);ctx.strokeStyle='rgba(255,255,255,.28)';ctx.strokeRect(x*S,y*S,S,S);} 
 function draw(){ctx.clearRect(0,0,cv.width,cv.height);for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++)drawCell(x,y,board[y][x]);for(let y=0;y<p.m.length;y++)for(let x=0;x<p.m[y].length;x++)if(p.m[y][x])drawCell(p.x+x,p.y+y,{img:p.img});}
-
 function left(){if(!collides(p.x-1,p.y))p.x--;} function right(){if(!collides(p.x+1,p.y))p.x++;}
-function down(){if(!collides(p.x,p.y+1))p.y++;} function rot(){const r=rotate(p.m);if(!collides(p.x,p.y,r))p.m=r;}
-function hard(){while(!collides(p.x,p.y+1))p.y++;}
-
+function down(){if(!collides(p.x,p.y+1))p.y++;} function rot(){const r=rotate(p.m);if(!collides(p.x,p.y,r))p.m=r;} function hard(){while(!collides(p.x,p.y+1))p.y++;}
 addEventListener('keydown',e=>{if(e.key==='ArrowLeft')left();if(e.key==='ArrowRight')right();if(e.key==='ArrowDown')down();if(e.key==='ArrowUp')rot();if(e.code==='Space')hard();});
-['left','right','down','rot','hard'].forEach(id=>document.getElementById(id).addEventListener('click',eval(id)));
-</script>  <script type="module">
-    import { inject } from "https://esm.sh/@vercel/analytics";
-    inject();
-  </script>
-</body></html>
+['left','right','down','rot','hard'].forEach(id=>document.getElementById(id).addEventListener('click',window[id]));
+updateHud();
+</script><script type="module">import { inject } from "https://esm.sh/@vercel/analytics"; inject();</script></body></html>

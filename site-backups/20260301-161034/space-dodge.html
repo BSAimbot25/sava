@@ -20,9 +20,6 @@ const giraffe='🦒';
 function fit(){c.width=innerWidth-16;c.height=innerHeight-66;} fit(); addEventListener('resize',fit);
 let player,obs,score,alive,last,spawnT,difficulty;
 let keys={};
-const SCORE_KEY='sava_scores';
-function loadScores(){try{return Object.assign({tetris:0,dodge:0,snake:0},JSON.parse(localStorage.getItem(SCORE_KEY)||'{}'));}catch{return {tetris:0,dodge:0,snake:0};}}
-function saveDodge(v){const s=loadScores();if(v>s.dodge){s.dodge=v;localStorage.setItem(SCORE_KEY,JSON.stringify(s));}}
 
 function reset(){
   player={x:c.width/2,y:c.height/2,r:24,vx:0,vy:0};
@@ -31,7 +28,7 @@ function reset(){
   alive=true; last=0; spawnT=0;
   difficulty = 1;
   state.textContent='Survive';
-  scoreEl.textContent='Score: 0 | Best: '+Math.floor(loadScores().dodge||0);
+  scoreEl.textContent='Score: 0';
 }
 reset();
 
@@ -77,9 +74,9 @@ function step(ts){const dt=(ts-last)||16; last=ts;
     obs.forEach(o=>{o.x+=o.vx*(dt/16);o.y+=o.vy*(dt/16);o.spin+=0.05+o.vx*0.002;});
     obs=obs.filter(o=>o.x>-80&&o.x<c.width+80&&o.y>-80&&o.y<c.height+80);
 
-    for(const o of obs){if(hit(o)){alive=false;saveDodge(Math.floor(score));state.textContent='Game over - tap to restart';break;}}
+    for(const o of obs){if(hit(o)){alive=false;state.textContent='Game over - tap to restart';break;}}
     score += dt*0.012*(1+difficulty*0.15);
-    scoreEl.textContent='Score: '+Math.floor(score)+' | Best: '+Math.floor(loadScores().dodge||0);
+    scoreEl.textContent='Score: '+Math.floor(score);
   }
 
   draw(); requestAnimationFrame(step);

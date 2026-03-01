@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sava Guestbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bungee:wght@400&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#0c1022;--panel:#161b35;--ink:#fff;--hot:#ffee00;--mint:#00ffc8}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Manrope,sans-serif;color:var(--ink);background:radial-gradient(900px 420px at 10% -10%,rgba(255,238,0,.2),transparent 60%),radial-gradient(900px 420px at 90% -12%,rgba(0,255,200,.15),transparent 60%),var(--bg);min-height:100vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+    .wrap{width:min(980px,calc(100% - 20px));margin:16px auto 28px}
+    .top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+    h1{font-family:Bungee,sans-serif;color:var(--hot);font-size:2rem;margin:0}
+    .actions{display:flex;gap:8px;align-items:center}
+    .back{background:var(--hot);color:#151515;text-decoration:none;padding:9px 12px;border-radius:999px;font-weight:800}
+    .plus{border:0;background:var(--mint);color:#04221b;font-size:1.4rem;line-height:1;width:40px;height:40px;border-radius:999px;font-weight:900;cursor:pointer}
+    .panel{background:var(--panel);border:1px solid rgba(255,255,255,.2);border-radius:16px;padding:12px;box-shadow:0 12px 30px rgba(0,0,0,.35)}
+    .status{opacity:.8;font-size:.92rem;margin:0}
+    .headrow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:0 0 10px}
+    .sort{display:flex;gap:6px}
+    .sort-btn{border:1px solid rgba(255,255,255,.24);background:rgba(255,255,255,.08);color:#fff;border-radius:999px;padding:6px 10px;font-weight:700;font-size:.82rem;cursor:pointer}
+    .sort-btn.active{background:#fff200;color:#111;border-color:#fff200}
+    .cards{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+    .card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:10px}
+    .name{font-weight:800;color:#ffee8a}
+    .comment{margin-top:6px;line-height:1.5;white-space:pre-wrap}
+    .card-footer{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+    .like-btn{border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.12);color:#fff;border-radius:999px;padding:5px 10px;font-weight:700;cursor:pointer}
+    .like-btn[disabled]{opacity:.55;cursor:default}
+    .likes{font-size:.85rem;opacity:.88}
+    .modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.65);padding:12px;z-index:50}
+    .box{width:min(520px,100%);background:#fff;color:#111;border-radius:16px;padding:14px}
+    .box h2{margin:0 0 8px}
+    label{display:block;margin:10px 0 6px;font-weight:700}
+    input,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid #d0d0d0;font:inherit}
+    textarea{min-height:120px;resize:vertical}
+    .row{display:flex;gap:8px;margin-top:10px}
+    .btn{border:0;border-radius:10px;padding:10px 12px;font-weight:800;cursor:pointer}
+    .save{background:#00e88d}.cancel{background:#ececec}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <h1>SAVA GUESTBOOK</h1>
+      <div class="actions">
+        <button class="plus" id="openModal" title="Add entry">+</button>
+        <a class="back" href="./index.html">Back</a>
+      </div>
+    </div>
+
+    <section class="panel">
+      <div class="headrow">
+        <p class="status" id="status">Loading posts...</p>
+        <div class="sort">
+          <button class="sort-btn active" id="sortRecent">Recent</button>
+          <button class="sort-btn" id="sortLikes">Likes</button>
+        </div>
+      </div>
+      <div class="cards" id="cards"></div>
+    </section>
+  </div>
+
+  <div class="modal" id="modal">
+    <div class="box">
+      <h2>Add Post</h2>
+      <form id="guestForm">
+        <label>Name</label>
+        <input name="name" required maxlength="60" />
+        <label>Comment</label>
+        <textarea name="comment" required maxlength="500"></textarea>
+        <div class="row">
+          <button class="btn save" type="submit">Post</button>
+          <button class="btn cancel" type="button" id="closeModal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import { init, i, id } from 'https://esm.sh/@instantdb/core';
+
+    const APP_ID = '55e9290c-92d5-4014-9061-7723025e462c';
+    const schema = i.schema({
+      entities: {
+        guestbookEntries: i.entity({
+          name: i.string(),
+          comment: i.string(),
+          createdAt: i.number(),
+          likes: i.number(),
+        }),
+      },
+    });
+
+    const db = init({ appId: APP_ID, schema });
+
+    const cards = document.getElementById('cards');
+    const statusEl = document.getElementById('status');
+    const modal = document.getElementById('modal');
+    const form = document.getElementById('guestForm');
+    const sortRecent = document.getElementById('sortRecent');
+    const sortLikes = document.getElementById('sortLikes');
+    const likedKey = 'sillysava-liked-entries-v1';
+
+    let currentSort = 'recent';
+    let allEntries = [];
+
+    function getLikedSet(){
+      try { return new Set(JSON.parse(localStorage.getItem(likedKey) || '[]')); }
+      catch { return new Set(); }
+    }
+    function saveLikedSet(set){
+      localStorage.setItem(likedKey, JSON.stringify([...set]));
+    }
+
+    function escapeHtml(s){
+      return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;');
+    }
+
+    function getSorted(entries){
+      const list = [...entries];
+      if(currentSort === 'likes'){
+        list.sort((a,b)=>(b.likes||0)-(a.likes||0) || (b.createdAt||0)-(a.createdAt||0));
+      } else {
+        list.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+      }
+      return list;
+    }
+
+    function render(){
+      cards.innerHTML = '';
+      const entries = getSorted(allEntries);
+      if(!entries.length){
+        statusEl.textContent = 'No posts yet. Tap + to add the first one.';
+        return;
+      }
+      statusEl.textContent = `${entries.length} post${entries.length===1?'':'s'}`;
+      const liked = getLikedSet();
+
+      entries.forEach((e) => {
+        const card = document.createElement('article');
+        card.className = 'card';
+        const likes = e.likes || 0;
+        const didLike = liked.has(e.id);
+        card.innerHTML = `
+          <div class="name">${escapeHtml(e.name || 'Anonymous')}</div>
+          <div class="comment">${escapeHtml(e.comment || '')}</div>
+          <div class="card-footer">
+            <button class="like-btn" ${didLike ? 'disabled' : ''}>❤️ Like</button>
+            <span class="likes">${likes} like${likes===1?'':'s'}</span>
+          </div>`;
+
+        const btn = card.querySelector('.like-btn');
+        if(!didLike){
+          btn.addEventListener('click', async () => {
+            btn.disabled = true;
+            try {
+              await db.transact(db.tx.guestbookEntries[e.id].update({ likes: likes + 1 }));
+              const s = getLikedSet(); s.add(e.id); saveLikedSet(s);
+            } catch {
+              btn.disabled = false;
+            }
+          });
+        }
+
+        cards.appendChild(card);
+      });
+    }
+
+    function setSort(mode){
+      currentSort = mode;
+      sortRecent.classList.toggle('active', mode === 'recent');
+      sortLikes.classList.toggle('active', mode === 'likes');
+      render();
+    }
+
+    sortRecent.onclick = () => setSort('recent');
+    sortLikes.onclick = () => setSort('likes');
+
+    db.subscribeQuery({ guestbookEntries: {} }, (resp) => {
+      if (resp.error) {
+        statusEl.textContent = `Could not load entries: ${resp.error.message}`;
+        return;
+      }
+      allEntries = resp.data?.guestbookEntries || [];
+      render();
+    });
+
+    document.getElementById('openModal').onclick = () => modal.style.display = 'grid';
+    document.getElementById('closeModal').onclick = () => modal.style.display = 'none';
+    modal.onclick = (e) => { if(e.target === modal) modal.style.display = 'none'; };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fd = new FormData(form);
+      const name = (fd.get('name') || '').toString().trim();
+      const comment = (fd.get('comment') || '').toString().trim();
+      if(!name || !comment) return;
+
+      try {
+        await db.transact(db.tx.guestbookEntries[id()].update({ name, comment, createdAt: Date.now(), likes: 0 }));
+        form.reset();
+        modal.style.display = 'none';
+      } catch {
+        statusEl.textContent = 'Failed to post entry. Try again.';
+      }
+    });
+  </script>
+  <script type="module">
+    import { inject } from "https://esm.sh/@vercel/analytics";
+    inject();
+  </script>
+</body>
+</html>
