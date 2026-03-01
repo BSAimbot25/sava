@@ -99,15 +99,18 @@ const designBox=document.getElementById('designBox');
 const designImg=document.getElementById('designImg');
 
 function setBoxes(p){
-  const b=p.box, pad=4; // pad removes old print bleed around edges
+  const b=p.box;
+  const maskScale=(p.maskScale||1.34); // intentionally larger than design to fully hide old print on source mockup
+  const mw=b.w*maskScale, mh=b.h*maskScale;
+
   designBox.style.left=b.x+'%'; designBox.style.top=b.y+'%';
   designBox.style.width=b.w+'%'; designBox.style.height=b.h+'%';
 
   eraserBox.style.left=b.x+'%'; eraserBox.style.top=b.y+'%';
-  eraserBox.style.width=`calc(${b.w}% + ${pad*2}px)`;
-  eraserBox.style.height=`calc(${b.h}% + ${pad*2}px)`;
+  eraserBox.style.width=mw+'%';
+  eraserBox.style.height=mh+'%';
   eraserBox.style.background=p.mask;
-  eraserBox.style.opacity='0.98';
+  eraserBox.style.opacity='0.995';
 }
 
 function paint(){
