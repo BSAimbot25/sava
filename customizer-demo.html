@@ -13,56 +13,37 @@
     .wrap{width:min(1300px,calc(100% - 22px));margin:14px auto;display:grid;grid-template-columns:1fr 1.05fr;gap:12px}
     .panel{background:var(--card);border:1px solid #2a3357;border-radius:14px;padding:12px}
     h2{margin:0 0 8px}.muted{color:var(--muted)}
-    .productGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;max-height:360px;overflow:auto;padding-right:2px}
+    .productGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;max-height:360px;overflow:auto}
     .product{background:#101833;border:1px solid #2b3762;border-radius:10px;padding:8px;cursor:pointer;text-align:left;color:#fff}
     .product.active{outline:2px solid var(--accent)}
-    .pname{font-weight:800;font-size:.92rem}
-    .ptag{font-size:.78rem;color:#9fb0e2;margin-top:2px}
-    .thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:8px;max-height:290px;overflow:auto;padding-right:2px}
+    .pname{font-weight:800;font-size:.92rem}.ptag{font-size:.78rem;color:#9fb0e2;margin-top:2px}
+    .thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:8px;max-height:290px;overflow:auto}
     .thumb{border:2px solid transparent;border-radius:10px;overflow:hidden;cursor:pointer;height:70px;background:#0f1530}
     .thumb.active{border-color:var(--ok)} .thumb img{width:100%;height:100%;object-fit:cover;display:block}
 
-    .previewWrap{background:#0e1532;border:1px solid #2b3762;border-radius:12px;padding:12px;display:grid;place-items:center;min-height:560px}
-    .mock{position:relative;display:none}
-    .mock.active{display:block}
-
-    .shirt,.tank,.sweat{width:320px;height:360px;background:#efefef;border-radius:26px 26px 34px 34px;box-shadow:0 18px 28px #0007}
-    .shirt:before,.shirt:after,.tank:before,.tank:after,.sweat:before,.sweat:after{content:'';position:absolute;top:28px;width:74px;height:96px;background:#efefef;border-radius:18px}
-    .shirt:before,.sweat:before{left:-50px;transform:rotate(20deg)} .shirt:after,.sweat:after{right:-50px;transform:rotate(-20deg)}
-    .tank:before{left:-42px;transform:rotate(16deg)} .tank:after{right:-42px;transform:rotate(-16deg)}
-    .tank:before,.tank:after{height:76px}
-    .sweat{background:#f4f4f4}
-
-    .mug{width:320px;height:220px;background:#f8f8f8;border-radius:20px;box-shadow:0 18px 28px #0007}
-    .mug:after{content:'';position:absolute;right:-48px;top:56px;width:64px;height:96px;border:13px solid #ececec;border-left:none;border-radius:0 36px 36px 0}
-
-    .phone{width:220px;height:430px;background:#111;border-radius:28px;border:3px solid #222;box-shadow:0 18px 28px #0007}
-    .flat{width:360px;height:360px;background:#fafafa;border-radius:18px;box-shadow:0 18px 28px #0007}
-    .rect{width:380px;height:260px;background:#f4f4f4;border-radius:16px;box-shadow:0 18px 28px #0007}
-    .notebook{width:300px;height:420px;background:#f8f8f8;border-radius:12px;box-shadow:0 18px 28px #0007}
-    .notebook:before{content:'';position:absolute;left:20px;top:0;bottom:0;width:10px;background:repeating-linear-gradient(to bottom,#bbb 0 8px,transparent 8px 14px)}
-    .tote{width:320px;height:360px;background:#f0ece3;border-radius:10px;box-shadow:0 18px 28px #0007}
-    .tote:before,.tote:after{content:'';position:absolute;top:-55px;width:90px;height:90px;border:10px solid #d9d2c5;border-bottom:none;border-radius:60px 60px 0 0}
-    .tote:before{left:36px}.tote:after{right:36px}
-
-    .design{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border:1px dashed rgba(255,255,255,.25);overflow:hidden;background:#fff}
+    .previewWrap{background:#0e1532;border:1px solid #2b3762;border-radius:12px;padding:10px}
+    .preview{position:relative;border-radius:12px;overflow:hidden;background:#0a1030;aspect-ratio:1/1;max-width:560px;margin:auto}
+    .base{width:100%;height:100%;object-fit:contain;display:block}
+    .eraser,.design{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
+    .eraser{border-radius:10px;border:1px solid rgba(0,0,0,.08);box-shadow:0 2px 8px rgba(0,0,0,.15) inset}
+    .design{border-radius:8px;overflow:hidden;border:1px dashed rgba(255,255,255,.24);background:#fff}
     .design img{width:100%;height:100%;object-fit:cover;display:block}
 
     .meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
     .pill{background:#101833;border:1px solid #2b3762;border-radius:999px;padding:6px 10px;font-size:.9rem}
-    @media (max-width:980px){.wrap{grid-template-columns:1fr}.previewWrap{min-height:420px}}
+    @media (max-width:980px){.wrap{grid-template-columns:1fr}.preview{max-width:100%}}
   </style>
 </head>
 <body>
   <header class="top">
-    <strong>Customizer Demo (Fixed)</strong>
+    <strong>Customizer Demo (Real Mockup + Clean Overlay)</strong>
     <a class="btn" href="./merch.html">Back to Merch</a>
   </header>
 
   <main class="wrap">
     <section class="panel">
       <h2>1) Pick product</h2>
-      <div class="muted">No ghost image behind anymore. Using clean mockup templates for every product.</div>
+      <div class="muted">Using real product images again, with a stronger clean area so old print does not show through.</div>
       <div class="productGrid" id="products"></div>
       <h2 style="margin-top:12px">2) Pick design image</h2>
       <div class="thumbs" id="thumbs"></div>
@@ -71,15 +52,11 @@
     <section class="panel">
       <h2>Live Preview</h2>
       <div class="previewWrap">
-        <div class="mock" id="mock-shirt"><div class="shirt"></div><div class="design" id="d-shirt"><img id="img-shirt"></div></div>
-        <div class="mock" id="mock-tank"><div class="tank"></div><div class="design" id="d-tank"><img id="img-tank"></div></div>
-        <div class="mock" id="mock-sweat"><div class="sweat"></div><div class="design" id="d-sweat"><img id="img-sweat"></div></div>
-        <div class="mock" id="mock-mug"><div class="mug"></div><div class="design" id="d-mug"><img id="img-mug"></div></div>
-        <div class="mock" id="mock-phone"><div class="phone"></div><div class="design" id="d-phone"><img id="img-phone"></div></div>
-        <div class="mock" id="mock-flat"><div class="flat"></div><div class="design" id="d-flat"><img id="img-flat"></div></div>
-        <div class="mock" id="mock-rect"><div class="rect"></div><div class="design" id="d-rect"><img id="img-rect"></div></div>
-        <div class="mock" id="mock-notebook"><div class="notebook"></div><div class="design" id="d-notebook"><img id="img-notebook"></div></div>
-        <div class="mock" id="mock-tote"><div class="tote"></div><div class="design" id="d-tote"><img id="img-tote"></div></div>
+        <div class="preview">
+          <img class="base" id="baseImg" alt="Product mockup" loading="eager">
+          <div class="eraser" id="eraserBox" aria-hidden="true"></div>
+          <div class="design" id="designBox"><img id="designImg" alt="Selected design"></div>
+        </div>
       </div>
       <div class="meta">
         <div class="pill">Selected product: <b id="chosenProduct"></b></div>
@@ -91,54 +68,70 @@
 
 <script>
 const products=[
-  {name:'Winchester Tee',cat:'Clothing',view:'shirt',box:{w:128,h:146}},
-  {name:'Sava Tee',cat:'Clothing',view:'shirt',box:{w:128,h:146}},
-  {name:'Saveliy Tee',cat:'Clothing',view:'shirt',box:{w:128,h:146}},
-  {name:'Winchester Tank',cat:'Clothing',view:'tank',box:{w:134,h:160}},
-  {name:'Sava Heavy Cotton Tank',cat:'Clothing',view:'tank',box:{w:134,h:160}},
-  {name:'Saveliy Kids Sweatshirt',cat:'Clothing',view:'sweat',box:{w:122,h:138}},
-  {name:'Sava Baby Tee',cat:'Clothing',view:'shirt',box:{w:118,h:132}},
-  {name:'Winchester Toddler Tee',cat:'Clothing',view:'shirt',box:{w:118,h:132}},
-  {name:'Sava Mug',cat:'Accessories',view:'mug',box:{w:190,h:130}},
-  {name:'Sava Phone Case',cat:'Accessories',view:'phone',box:{w:164,h:292}},
-  {name:'Sava Sticker Pack',cat:'Accessories',view:'flat',box:{w:248,h:248}},
-  {name:'Saveliy Die-Cut Stickers',cat:'Accessories',view:'flat',box:{w:248,h:248}},
-  {name:'Winchester Pin Buttons',cat:'Accessories',view:'flat',box:{w:210,h:210}},
-  {name:'Sava Magnets',cat:'Accessories',view:'flat',box:{w:210,h:210}},
-  {name:'Sava Coaster',cat:'Accessories',view:'flat',box:{w:210,h:210}},
-  {name:'Winchester Spiral Notebook',cat:'Accessories',view:'notebook',box:{w:210,h:320}},
-  {name:'Sava Tote Bag',cat:'Accessories',view:'tote',box:{w:200,h:230}},
-  {name:'Saveliy Mouse Pad',cat:'Accessories',view:'rect',box:{w:290,h:172}}
+  {name:'Winchester Tee',cat:'Clothing',front:'https://images-api.printify.com/mockup/69a4399b9f7e893e8a0e4941/12100/92570/winchester-tee.jpg?camera_label=front',box:{x:50,y:52,w:25,h:31},mask:'#f1f1f1'},
+  {name:'Sava Tee',cat:'Clothing',front:'https://images-api.printify.com/mockup/69a439a7eb470f86b105f29c/12100/92570/sava-tee.jpg?camera_label=front',box:{x:50,y:52,w:25,h:31},mask:'#f1f1f1'},
+  {name:'Saveliy Tee',cat:'Clothing',front:'https://images-api.printify.com/mockup/69a439b3414758b6c60315b2/12100/92570/saveliy-tee.jpg?camera_label=front',box:{x:50,y:52,w:25,h:31},mask:'#f1f1f1'},
+  {name:'Winchester Tank',cat:'Clothing',front:'https://images-api.printify.com/mockup/69a43a8a46730b56700a6212/24828/101889/winchester-tank.jpg?camera_label=front',box:{x:50,y:52,w:26,h:34},mask:'#f3f3f3'},
+  {name:'Sava Heavy Cotton Tank',cat:'Clothing',front:'https://images-api.printify.com/mockup/69a43cc67ab6ca0074090b13/76985/105316/sava-heavy-cotton-tank.jpg?camera_label=front',box:{x:50,y:53,w:26,h:33},mask:'#f1f1f1'},
+  {name:'Saveliy Kids Sweatshirt',cat:'Clothing',front:'https://images-api.printify.com/mockup/69a43ccc1ec5ca402c0374f9/31729/301/saveliy-kids-sweatshirt.jpg?camera_label=front',box:{x:50,y:53,w:24,h:30},mask:'#f1f1f1'},
+  {name:'Sava Baby Tee',cat:'Clothing',front:'https://images-api.printify.com/mockup/69a43a9346730b56700a6213/95962/81229/sava-baby-tee.jpg?camera_label=front',box:{x:50,y:54,w:24,h:30},mask:'#f3f3f3'},
+  {name:'Winchester Toddler Tee',cat:'Clothing',front:'https://images-api.printify.com/mockup/69a43a9d1ec5ca402c037494/72048/100703/winchester-toddler-tee.jpg?camera_label=front',box:{x:50,y:54,w:24,h:30},mask:'#f3f3f3'},
+
+  {name:'Sava Mug',cat:'Accessories',front:'https://images-api.printify.com/mockup/69a43cb73b12a90c8e08b481/67624/7674/sava-mug.jpg?camera_label=front',box:{x:49,y:51,w:32,h:26},mask:'#fafafa'},
+  {name:'Sava Phone Case',cat:'Accessories',front:'https://images-api.printify.com/mockup/69a43cbf46730b56700a6274/62582/97458/sava-phone-case.jpg?camera_label=front-and-side',box:{x:50,y:52,w:31,h:48},mask:'#f6f6f6'},
+  {name:'Sava Sticker Pack',cat:'Accessories',front:'https://images-api.printify.com/mockup/69a45454eb470f86b105f7fb/45747/16654/sava-sticker-pack.jpg?camera_label=front',box:{x:50,y:52,w:45,h:45},mask:'#ffffff'},
+  {name:'Saveliy Die-Cut Stickers',cat:'Accessories',front:'https://images-api.printify.com/mockup/69a4545d7ab6ca0074090fe6/72006/13462/saveliy-die-cut-stickers.jpg?camera_label=front',box:{x:50,y:52,w:45,h:45},mask:'#ffffff'},
+  {name:'Winchester Pin Buttons',cat:'Accessories',front:'https://images-api.printify.com/mockup/69a454689f7e893e8a0e4ef3/62070/98417/winchester-pin-buttons.jpg?camera_label=front',box:{x:50,y:52,w:36,h:36},mask:'#ffffff'},
+  {name:'Sava Magnets',cat:'Accessories',front:'https://images-api.printify.com/mockup/69a4547346730b56700a67a7/62034/3378/sava-magnets.jpg?camera_label=front',box:{x:50,y:52,w:36,h:36},mask:'#ffffff'},
+  {name:'Sava Coaster',cat:'Accessories',front:'https://images-api.printify.com/mockup/69a4547deb470f86b105f806/74633/40573/sava-coaster.jpg?camera_label=front',box:{x:50,y:52,w:35,h:35},mask:'#ffffff'},
+  {name:'Winchester Spiral Notebook',cat:'Accessories',front:'https://images-api.printify.com/mockup/69a4548846730b56700a67af/67981/8315/winchester-spiral-notebook.jpg?camera_label=front',box:{x:50,y:53,w:34,h:45},mask:'#fafafa'},
+  {name:'Sava Tote Bag',cat:'Accessories',front:'https://images-api.printify.com/mockup/69a454967fc2996b8d0abaee/64177/5887/sava-tote-bag.jpg?camera_label=front',box:{x:50,y:54,w:32,h:38},mask:'#efe8db'},
+  {name:'Saveliy Mouse Pad',cat:'Accessories',front:'https://images-api.printify.com/mockup/69a454a594ca9fbf1d020c90/71664/12239/saveliy-mouse-pad.jpg?camera_label=front',box:{x:50,y:53,w:45,h:27},mask:'#f4f4f4'}
 ];
+
 const images=[...Array(12)].map((_,i)=>`${i+1}.jpg`);
-let selectedProduct=products[0],selectedImage=images[0];
+let selectedProduct=products[0], selectedImage=images[0];
 const productRoot=document.getElementById('products');
 const thumbsRoot=document.getElementById('thumbs');
+const baseImg=document.getElementById('baseImg');
+const eraserBox=document.getElementById('eraserBox');
+const designBox=document.getElementById('designBox');
+const designImg=document.getElementById('designImg');
 
-function setDesign(view,box){
-  const d=document.getElementById('d-'+view);
-  d.style.width=box.w+'px'; d.style.height=box.h+'px';
+function setBoxes(p){
+  const b=p.box, pad=4; // pad removes old print bleed around edges
+  designBox.style.left=b.x+'%'; designBox.style.top=b.y+'%';
+  designBox.style.width=b.w+'%'; designBox.style.height=b.h+'%';
+
+  eraserBox.style.left=b.x+'%'; eraserBox.style.top=b.y+'%';
+  eraserBox.style.width=`calc(${b.w}% + ${pad*2}px)`;
+  eraserBox.style.height=`calc(${b.h}% + ${pad*2}px)`;
+  eraserBox.style.background=p.mask;
+  eraserBox.style.opacity='0.98';
 }
+
 function paint(){
   document.querySelectorAll('.product').forEach((el,i)=>el.classList.toggle('active',products[i]===selectedProduct));
   document.querySelectorAll('.thumb').forEach((el,i)=>el.classList.toggle('active',images[i]===selectedImage));
-  document.querySelectorAll('.mock').forEach(el=>el.classList.remove('active'));
-  document.getElementById('mock-'+selectedProduct.view).classList.add('active');
-  document.querySelectorAll('[id^="img-"]').forEach(im=>im.src='./'+selectedImage);
-  setDesign(selectedProduct.view,selectedProduct.box);
+  baseImg.src=selectedProduct.front;
+  designImg.src='./'+selectedImage;
+  setBoxes(selectedProduct);
   chosenProduct.textContent=selectedProduct.name;
   chosenImage.textContent=selectedImage;
   chosenCategory.textContent=selectedProduct.cat;
 }
+
 products.forEach((p)=>{
   const d=document.createElement('button'); d.className='product'; d.type='button';
   d.innerHTML=`<div class='pname'>${p.name}</div><div class='ptag'>${p.cat}</div>`;
-  d.onclick=()=>{selectedProduct=p;paint();}; productRoot.appendChild(d);
+  d.onclick=()=>{selectedProduct=p;paint();};
+  productRoot.appendChild(d);
 });
 images.forEach((img)=>{
   const d=document.createElement('button'); d.className='thumb'; d.type='button';
   d.innerHTML=`<img src='./${img}' alt='${img}'>`;
-  d.onclick=()=>{selectedImage=img;paint();}; thumbsRoot.appendChild(d);
+  d.onclick=()=>{selectedImage=img;paint();};
+  thumbsRoot.appendChild(d);
 });
 paint();
 </script>
