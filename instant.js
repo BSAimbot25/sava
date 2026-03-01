@@ -63,38 +63,55 @@ async function findUserByName(username) {
 const api = {
   db,
   appId: APP_ID,
-  async createOrLogin(username, password) {
+  async userExists(username){
+    const u = await findUserByName(String(username||'').trim());
+    return !!u;
+  },
+
+  async register(username, password) {
     const n = String(username || '').trim();
     const p = String(password || '');
     if (!n || !p) throw new Error('Missing username/password');
 
-    let u = await findUserByName(n);
-    if (!u) {
-      const role = n === 'PapaSava' ? 'Master Sava' : 'Silkin Slave';
-      const uid = id();
-      await db.transact(db.tx.users[uid].update({
-        username: n,
-        password: p,
-        role,
-        displayName: n,
-        bio: '',
-        favGame: 'tetris',
-        notes: '',
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
-      }));
-      u = { id: uid, username: n, role, displayName: n, bio: '', favGame: 'tetris', notes: '' };
-    } else {
-      if ((u.password || '') !== p) throw new Error('Invalid password');
-      if (u.username === 'PapaSava' && u.role !== 'Master Sava') {
-        await db.transact(db.tx.users[u.id].update({ role: 'Master Sava', updatedAt: Date.now() }));
-        u.role = 'Master Sava';
-      }
+    const existing = await findUserByName(n);
+    if (existing) throw new Error('Username already exists');
+
+    const role = n === 'PapaSava' ? 'Master Sava' : 'Silkin Slave';
+    const uid = id();
+    await db.transact(db.tx.users[uid].update({
+      username: n,
+      password: p,
+      role,
+      displayName: n,
+      bio: '',
+      favGame: 'tetris',
+      notes: '',
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    }));
+    const u = { id: uid, username: n, role, displayName: n, bio: '', favGame: 'tetris', notes: '' };
+    localStorage.setItem('sava_current_user_v1', u.username);
+    localStorage.setItem('sava_last_user_v1', u.username);
+    return u;
+  },
+
+  async login(username, password) {
+    const n = String(username || '').trim();
+    const p = String(password || '');
+    if (!n || !p) throw new Error('Missing username/password');
+    const u = await findUserByName(n);
+    if (!u) throw new Error('User not found');
+    if ((u.password || '') !== p) throw new Error('Invalid password');
+    if (u.username === 'PapaSava' && u.role !== 'Master Sava') {
+      await db.transact(db.tx.users[u.id].update({ role: 'Master Sava', updatedAt: Date.now() }));
+      u.role = 'Master Sava';
     }
     localStorage.setItem('sava_current_user_v1', u.username);
     localStorage.setItem('sava_last_user_v1', u.username);
     return u;
   },
+
+  async createOrLogin(username, password) { return this.login(username,password).catch(()=>this.register(username,password)); },
 
   async getCurrentUser() {
     const cur = localStorage.getItem('sava_current_user_v1') || '';
@@ -135,9 +152,13 @@ const api = {
 
   async fetchUserScores(username) {
     const data = await queryOnce({ scores: {} });
-    const rows = (data?.scores || []).filter(r => (r.name||'') === username);
+    const rows = (data?.scores || []).filter(r => (r.name||'').toLowerCase() === String(username||'').toLowerCase());
     rows.sort((a,b)=>Number(b.score||0)-Number(a.score||0));
     return rows;
+  },
+
+  async fetchUserProfile(username){
+    return findUserByName(String(username||'').trim());
   }
 };
 

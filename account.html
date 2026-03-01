@@ -36,6 +36,7 @@
         <h3>Identity</h3>
         <p id="who" class="muted"></p>
         <p>Role: <span id="roleBadge" class="role slave">Silkin Slave</span></p>
+        <p><a id="viewPublic" class="btn" href="#" style="display:inline-block;margin:6px 0">View Public Profile</a></p>
         <button id="logout" class="btn">Log out</button>
       </section>
 
@@ -79,12 +80,17 @@ async function loadAccount(){
   }
   if(!user){
     const u=users();
-    if(!u[current]){ location.href='./auth.html'; return; }
+    if(!u[current]){
+      // prevent mobile redirect loop: bootstrap minimal local shadow profile
+      u[current]={pass:'',created:Date.now(),role:(current==='PapaSava')?'Master Sava':'Silkin Slave',displayName:current,bio:'',favGame:'tetris',notes:''};
+      saveUsers(u);
+    }
     u[current].role = (current==='PapaSava') ? 'Master Sava' : (u[current].role || 'Silkin Slave');
     saveUsers(u); user=u[current];
   }
 
   who.textContent=`Signed in as ${current}`;
+  viewPublic.href='./profile.html?u='+encodeURIComponent(current);
   roleBadge.textContent=user.role||'Silkin Slave';
   roleBadge.className='role '+((user.role||'Silkin Slave')==='Master Sava'?'master':'slave');
   displayName.value=user.displayName||current;

@@ -74,7 +74,7 @@ async function render(){const d=ensure(); document.getElementById('playerName').
     const all=[];
     for(const [g,rows] of Object.entries(boards||{})){ for(const row of rows){ all.push({name:row.name,score:row.score,game:g}); } }
     all.sort((a,b)=>b.score-a.score);
-    el.innerHTML=(all.slice(0,20).map(r=>`<li><strong>${r.name}</strong> — ${gameLabel(r.game)}: ${Math.floor(r.score)}</li>`).join('')||'<li>No records yet</li>');
+    el.innerHTML=(all.slice(0,20).map(r=>`<li><a href='./profile.html?u=${encodeURIComponent(r.name)}' style='color:#9fe7ff;font-weight:800;text-decoration:none'>${r.name}</a> — ${gameLabel(r.game)}: ${Math.floor(r.score)}</li>`).join('')||'<li>No records yet</li>');
   }catch{
     el.innerHTML='<li>Leaderboard temporarily unavailable</li>';
   }

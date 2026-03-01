@@ -69,8 +69,11 @@ signupForm.onsubmit=async (e)=>{
   if(!/^[a-zA-Z0-9_\-.]{3,24}$/.test(n)) return err('Username invalid');
   try{
     if(window.InstantSync){
-      await window.InstantSync.createOrLogin(n,p);
-      setCurrent(n);
+      const uInstant = await window.InstantSync.register(n,p);
+      const uLocal=users();
+      uLocal[uInstant.username]={pass:hash(p),created:Date.now(),role:uInstant.role||'Silkin Slave',displayName:uInstant.displayName||uInstant.username,bio:uInstant.bio||'',favGame:uInstant.favGame||'tetris',notes:uInstant.notes||''};
+      saveUsers(uLocal);
+      setCurrent(uInstant.username);
       ok('Account synced to InstantDB. Redirecting...');
       return setTimeout(()=>location.href='./account.html',350);
     }
@@ -90,8 +93,11 @@ loginForm.onsubmit=async (e)=>{
   const n=normalize(liName.value), p=liPass.value;
   try{
     if(window.InstantSync){
-      await window.InstantSync.createOrLogin(n,p);
-      setCurrent(n);
+      const uInstant = await window.InstantSync.login(n,p);
+      const uLocal=users();
+      uLocal[uInstant.username]={pass:hash(p),created:uLocal[uInstant.username]?.created||Date.now(),role:uInstant.role||'Silkin Slave',displayName:uInstant.displayName||uInstant.username,bio:uInstant.bio||'',favGame:uInstant.favGame||'tetris',notes:uInstant.notes||''};
+      saveUsers(uLocal);
+      setCurrent(uInstant.username);
       ok('Logged in from InstantDB. Redirecting...');
       return setTimeout(()=>location.href='./account.html',300);
     }
