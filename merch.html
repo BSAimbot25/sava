@@ -9,8 +9,9 @@
     .top{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:#121427;border-bottom:1px solid rgba(255,255,255,.15)}
     .logo{font-weight:900;color:#ffe700;font-size:1.2rem}
     .back{background:#ffe700;color:#111;text-decoration:none;padding:8px 12px;border-radius:999px;font-weight:800}
-    .wrap{width:min(1200px,calc(100% - 20px));margin:16px auto}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+    .wrap{width:min(1240px,calc(100% - 20px));margin:16px auto}
+    h2{margin:18px 0 10px;color:#ffe700}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
     .card{background:#171b33;border:1px solid rgba(255,255,255,.16);border-radius:14px;overflow:hidden}
     .imgs{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid rgba(255,255,255,.12)}
     .shot{position:relative}
@@ -20,48 +21,56 @@
     .meta h3{margin:0 0 6px;font-size:1rem}
     .sub{opacity:.85;font-size:.9rem;margin-bottom:4px}
     .go{display:inline-block;margin-top:8px;background:#00ffc8;color:#062d24;text-decoration:none;padding:8px 12px;border-radius:10px;font-weight:800}
+    .note{background:#171b33;border:1px solid rgba(255,255,255,.16);padding:10px 12px;border-radius:12px;opacity:.9}
   </style>
 </head>
 <body>
-<header class="top">
-  <div class="logo">SILLYSAVA MERCH</div>
-  <a class="back" href="./index.html">Back</a>
-</header>
-
+<header class="top"><div class="logo">SILLYSAVA MERCH</div><a class="back" href="./index.html">Back</a></header>
 <main class="wrap">
-  <section class="grid" id="grid"></section>
+  <div class="note">All prices were lowered. Products grouped into clothing and accessories.</div>
+
+  <h2>Clothing</h2>
+  <section class="grid" id="clothing"></section>
+
+  <h2>Accessories</h2>
+  <section class="grid" id="accessories"></section>
 </main>
 
 <script>
-const products = [
+const clothing = [
   {title:'Winchester Tee',variants:46,url:'https://pouchmastersava.printify.me/product/27107362',front:'https://images-api.printify.com/mockup/69a4399b9f7e893e8a0e4941/12100/92570/winchester-tee.jpg?camera_label=front',back:'https://images-api.printify.com/mockup/69a4399b9f7e893e8a0e4941/12100/92571/winchester-tee.jpg?camera_label=back'},
   {title:'Sava Tee',variants:46,url:'https://pouchmastersava.printify.me/product/27107364',front:'https://images-api.printify.com/mockup/69a439a7eb470f86b105f29c/12100/92570/sava-tee.jpg?camera_label=front',back:'https://images-api.printify.com/mockup/69a439a7eb470f86b105f29c/12100/92571/sava-tee.jpg?camera_label=back'},
   {title:'Saveliy Tee',variants:46,url:'https://pouchmastersava.printify.me/product/27107365',front:'https://images-api.printify.com/mockup/69a439b3414758b6c60315b2/12100/92570/saveliy-tee.jpg?camera_label=front',back:'https://images-api.printify.com/mockup/69a439b3414758b6c60315b2/12100/92571/saveliy-tee.jpg?camera_label=back'},
   {title:'Winchester Tank',variants:24,url:'https://pouchmastersava.printify.me/product/27107390',front:'https://images-api.printify.com/mockup/69a43a8a46730b56700a6212/24828/101889/winchester-tank.jpg?camera_label=front',back:'https://images-api.printify.com/mockup/69a43a8a46730b56700a6212/24828/101892/winchester-tank.jpg?camera_label=back'},
   {title:'Sava Heavy Cotton Tank',variants:55,url:'https://pouchmastersava.printify.me/product/27107469',front:'https://images-api.printify.com/mockup/69a43cc67ab6ca0074090b13/76985/105316/sava-heavy-cotton-tank.jpg?camera_label=front',back:'https://images-api.printify.com/mockup/69a43cc67ab6ca0074090b13/76985/105317/sava-heavy-cotton-tank.jpg?camera_label=back'},
-  {title:'Sava Mug',variants:1,url:'https://pouchmastersava.printify.me/product/27107464',front:'https://images-api.printify.com/mockup/69a43cb73b12a90c8e08b481/67624/7674/sava-mug.jpg?camera_label=front',back:'https://images-api.printify.com/mockup/69a43cb73b12a90c8e08b481/67624/7674/sava-mug.jpg?camera_label=front'},
-  {title:'Sava Phone Case',variants:32,url:'https://pouchmastersava.printify.me/product/27107466',front:'https://images-api.printify.com/mockup/69a43cbf46730b56700a6274/62582/97458/sava-phone-case.jpg?camera_label=front-and-side',back:'https://images-api.printify.com/mockup/69a43cbf46730b56700a6274/62582/97458/sava-phone-case.jpg?camera_label=front-and-side'},
   {title:'Saveliy Kids Sweatshirt',variants:44,url:'https://pouchmastersava.printify.me/product/27107471',front:'https://images-api.printify.com/mockup/69a43ccc1ec5ca402c0374f9/31729/301/saveliy-kids-sweatshirt.jpg?camera_label=front',back:'https://images-api.printify.com/mockup/69a43ccc1ec5ca402c0374f9/31729/302/saveliy-kids-sweatshirt.jpg?camera_label=back'},
   {title:'Sava Baby Tee',variants:13,url:'https://pouchmastersava.printify.me/product/27107391',front:'https://images-api.printify.com/mockup/69a43a9346730b56700a6213/95962/81229/sava-baby-tee.jpg?camera_label=front',back:'https://images-api.printify.com/mockup/69a43a9346730b56700a6213/95962/81241/sava-baby-tee.jpg?camera_label=back'},
   {title:'Winchester Toddler Tee',variants:2,url:'https://pouchmastersava.printify.me/product/27107392',front:'https://images-api.printify.com/mockup/69a43a9d1ec5ca402c037494/72048/100703/winchester-toddler-tee.jpg?camera_label=front',back:'https://images-api.printify.com/mockup/69a43a9d1ec5ca402c037494/72048/100704/winchester-toddler-tee.jpg?camera_label=back'}
 ];
 
-const grid = document.getElementById('grid');
-products.forEach(p => {
-  const card = document.createElement('article');
-  card.className = 'card';
-  card.innerHTML = `
-    <div class="imgs">
-      <div class="shot"><img src="${p.front}" alt="${p.title} front" loading="lazy"><span class="label">Front</span></div>
-      <div class="shot"><img src="${p.back}" alt="${p.title} back" loading="lazy"><span class="label">Back</span></div>
-    </div>
-    <div class="meta">
-      <h3>${p.title}</h3>
-      <div class="sub">Variants/Sizes: ${p.variants}</div>
-      <a class="go" href="${p.url}" target="_blank" rel="noopener">Buy Now</a>
-    </div>`;
-  grid.appendChild(card);
-});
+const accessories = [
+  {title:'Sava Mug',variants:1,url:'https://pouchmastersava.printify.me/product/27107464',front:'https://images-api.printify.com/mockup/69a43cb73b12a90c8e08b481/67624/7674/sava-mug.jpg?camera_label=front',back:'https://images-api.printify.com/mockup/69a43cb73b12a90c8e08b481/67624/7674/sava-mug.jpg?camera_label=front'},
+  {title:'Sava Phone Case',variants:32,url:'https://pouchmastersava.printify.me/product/27107466',front:'https://images-api.printify.com/mockup/69a43cbf46730b56700a6274/62582/97458/sava-phone-case.jpg?camera_label=front-and-side',back:'https://images-api.printify.com/mockup/69a43cbf46730b56700a6274/62582/97458/sava-phone-case.jpg?camera_label=front-and-side'},
+  {title:'Sava Sticker Pack',variants:8,url:'https://pouchmastersava.printify.me/product/27108451',front:'https://images-api.printify.com/mockup/69a45454eb470f86b105f7fb/45747/16654/sava-sticker-pack.jpg?camera_label=front',back:'https://images-api.printify.com/mockup/69a45454eb470f86b105f7fb/45747/16654/sava-sticker-pack.jpg?camera_label=front'},
+  {title:'Saveliy Die-Cut Stickers',variants:5,url:'https://pouchmastersava.printify.me/product/27108452',front:'https://images-api.printify.com/mockup/69a4545d7ab6ca0074090fe6/72006/13462/saveliy-die-cut-stickers.jpg?camera_label=front',back:'https://images-api.printify.com/mockup/69a4545d7ab6ca0074090fe6/72006/13462/saveliy-die-cut-stickers.jpg?camera_label=front'},
+  {title:'Winchester Pin Buttons',variants:3,url:'https://pouchmastersava.printify.me/product/27108462',front:'https://images-api.printify.com/mockup/69a454689f7e893e8a0e4ef3/62070/98417/winchester-pin-buttons.jpg?camera_label=front',back:'https://images-api.printify.com/mockup/69a454689f7e893e8a0e4ef3/62070/98417/winchester-pin-buttons.jpg?camera_label=front'},
+  {title:'Sava Magnets',variants:3,url:'https://pouchmastersava.printify.me/product/27108467',front:'https://images-api.printify.com/mockup/69a4547346730b56700a67a7/62034/3378/sava-magnets.jpg?camera_label=front',back:'https://images-api.printify.com/mockup/69a4547346730b56700a67a7/62034/3378/sava-magnets.jpg?camera_label=front'},
+  {title:'Sava Coaster',variants:2,url:'https://pouchmastersava.printify.me/product/27108477',front:'https://images-api.printify.com/mockup/69a4547deb470f86b105f806/74633/40573/sava-coaster.jpg?camera_label=front',back:'https://images-api.printify.com/mockup/69a4547deb470f86b105f806/74633/40574/sava-coaster.jpg?camera_label=back'},
+  {title:'Winchester Spiral Notebook',variants:1,url:'https://pouchmastersava.printify.me/product/27108483',front:'https://images-api.printify.com/mockup/69a4548846730b56700a67af/67981/8315/winchester-spiral-notebook.jpg?camera_label=front',back:'https://images-api.printify.com/mockup/69a4548846730b56700a67af/67981/8316/winchester-spiral-notebook.jpg?camera_label=back'},
+  {title:'Sava Tote Bag',variants:2,url:'https://pouchmastersava.printify.me/product/27108485',front:'https://images-api.printify.com/mockup/69a454967fc2996b8d0abaee/64177/5887/sava-tote-bag.jpg?camera_label=front',back:'https://images-api.printify.com/mockup/69a454967fc2996b8d0abaee/64177/5889/sava-tote-bag.jpg?camera_label=back'},
+  {title:'Saveliy Mouse Pad',variants:2,url:'https://pouchmastersava.printify.me/product/27108489',front:'https://images-api.printify.com/mockup/69a454a594ca9fbf1d020c90/71664/12239/saveliy-mouse-pad.jpg?camera_label=front',back:'https://images-api.printify.com/mockup/69a454a594ca9fbf1d020c90/71664/12244/saveliy-mouse-pad.jpg?camera_label=back'}
+];
+
+function render(sectionId, items){
+  const root = document.getElementById(sectionId);
+  items.forEach(p=>{
+    const card=document.createElement('article');card.className='card';
+    card.innerHTML=`<div class="imgs"><div class="shot"><img src="${p.front}" alt="${p.title} front" loading="lazy"><span class="label">Front</span></div><div class="shot"><img src="${p.back}" alt="${p.title} back" loading="lazy"><span class="label">Back</span></div></div><div class="meta"><h3>${p.title}</h3><div class="sub">Variants/Sizes: ${p.variants||1}</div><a class="go" href="${p.url}" target="_blank" rel="noopener">Buy Now</a></div>`;
+    root.appendChild(card);
+  });
+}
+render('clothing', clothing);
+render('accessories', accessories);
 </script>
 <script type="module">import { inject } from "https://esm.sh/@vercel/analytics"; inject();</script>
 </body>
