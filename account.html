@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sava Account Hub</title>
+  <style>
+    body{margin:0;font-family:Inter,system-ui;background:linear-gradient(160deg,#090f25,#12193f);color:#fff}
+    .wrap{width:min(1100px,calc(100% - 24px));margin:18px auto}
+    .top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+    .btn{background:#ffe700;color:#111;text-decoration:none;padding:8px 12px;border-radius:999px;font-weight:800;border:0;cursor:pointer}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+    .card{background:#171f47;border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:14px}
+    input,textarea,select{width:100%;padding:10px;border-radius:10px;border:1px solid #ffffff33;background:#0d1434;color:#fff}
+    textarea{min-height:90px}
+    .role{display:inline-block;padding:6px 10px;border-radius:999px;font-weight:900}
+    .master{background:#ffe700;color:#111}
+    .slave{background:#7cc3ff;color:#05223c}
+    .muted{opacity:.82}
+    ul{margin:8px 0 0 18px}
+    @media(max-width:860px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <h1>👤 Sava Account Hub</h1>
+      <div>
+        <a class="btn" href="./index.html">Home</a>
+        <a class="btn" href="./games.html">Games</a>
+      </div>
+    </div>
+
+    <div class="grid">
+      <section class="card">
+        <h3>Identity</h3>
+        <p id="who" class="muted"></p>
+        <p>Role: <span id="roleBadge" class="role slave">Silkin Slave</span></p>
+        <button id="logout" class="btn">Log out</button>
+      </section>
+
+      <section class="card">
+        <h3>Profile</h3>
+        <label>Display Name</label><input id="displayName" />
+        <label>Bio</label><textarea id="bio"></textarea>
+        <label>Favorite Game</label>
+        <select id="favGame">
+          <option value="tetris">Tetris</option><option value="dodge">Dodge</option><option value="snake">Snake</option><option value="pong">Pong</option><option value="clicker">Face Clicker</option><option value="memory">Face Memory</option>
+        </select>
+        <button id="saveProfile" class="btn" style="margin-top:10px">Save Profile</button>
+      </section>
+
+      <section class="card">
+        <h3>My Records</h3>
+        <ul id="records"></ul>
+      </section>
+
+      <section class="card">
+        <h3>My Notes</h3>
+        <textarea id="notes" placeholder="Your private notes..."></textarea>
+        <button id="saveNotes" class="btn" style="margin-top:10px">Save Notes</button>
+      </section>
+    </div>
+  </div>
+
+<script>
+const USERS_KEY='sava_users_v1', CUR_KEY='sava_current_user_v1', SCORE_KEY='sava_arcade_v1';
+function users(){try{return JSON.parse(localStorage.getItem(USERS_KEY)||'{}')}catch{return {}}}
+function saveUsers(u){localStorage.setItem(USERS_KEY,JSON.stringify(u));}
+function scores(){try{return JSON.parse(localStorage.getItem(SCORE_KEY)||'{}')}catch{return {}}}
+const current=localStorage.getItem(CUR_KEY)||'';
+if(!current){ location.href='./auth.html'; }
+const u=users();
+if(!u[current]){ location.href='./auth.html'; }
+
+// enforce role policy
+u[current].role = (current==='PapaSava') ? 'Master Sava' : (u[current].role || 'Silkin Slave');
+saveUsers(u);
+
+const user=u[current];
+who.textContent=`Signed in as ${current}`;
+roleBadge.textContent=user.role;
+roleBadge.className='role '+(user.role==='Master Sava'?'master':'slave');
+
+displayName.value=user.displayName||current;
+bio.value=user.bio||'';
+favGame.value=user.favGame||'tetris';
+notes.value=user.notes||'';
+
+saveProfile.onclick=()=>{
+  const all=users();
+  all[current]=all[current]||{};
+  all[current].displayName=displayName.value.trim()||current;
+  all[current].bio=bio.value;
+  all[current].favGame=favGame.value;
+  all[current].role=(current==='PapaSava')?'Master Sava':'Silkin Slave';
+  saveUsers(all);
+  alert('Profile saved');
+};
+
+saveNotes.onclick=()=>{
+  const all=users();
+  all[current]=all[current]||{};
+  all[current].notes=notes.value;
+  saveUsers(all);
+  alert('Notes saved');
+};
+
+logout.onclick=()=>{localStorage.removeItem(CUR_KEY);location.href='./auth.html';};
+
+const rec=scores().records||{};
+const mine=[];
+for(const [g,arr] of Object.entries(rec)){for(const r of arr||[]){if((r.name||'')===current) mine.push({g,score:r.score||0});}}
+mine.sort((a,b)=>b.score-a.score);
+records.innerHTML=mine.length?mine.slice(0,20).map(r=>`<li><strong>${r.g}</strong>: ${Math.floor(r.score)}</li>`).join(''):'<li>No records yet</li>';
+</script>
+</body>
+</html>
