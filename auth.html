@@ -28,8 +28,7 @@
   <div class="wrap">
     <section class="hero">
       <h1>Sava Accounts</h1>
-      <p class="muted">Normal account flow: sign up, log in, keep records, edit profile, track progress.</p>
-      <p class="muted">Role policy: every new account gets <strong>Silkin Slave</strong>. Account <strong>PapaSava</strong> gets <strong>Master Sava</strong>.</p>
+      <p class="muted">Welcome back. Sign up or log in to continue.</p>
     </section>
     <section class="card">
       <div class="tabs"><button class="tab active" id="signTab" type="button">Sign up</button><button class="tab" id="loginTab" type="button">Log in</button></div>
@@ -48,23 +47,55 @@
   </div>
 
 <script>
-const USERS_KEY='sava_users_v1', CUR_KEY='sava_current_user_v1';
+const USERS_KEY='sava_users_v1', CUR_KEY='sava_current_user_v1', LAST_USER_KEY='sava_last_user_v1';
 const msg=document.getElementById('msg');
 function users(){try{return JSON.parse(localStorage.getItem(USERS_KEY)||'{}')}catch{return {}}}
 function saveUsers(u){localStorage.setItem(USERS_KEY,JSON.stringify(u));}
-function setCurrent(name){localStorage.setItem(CUR_KEY,name);}
+function setCurrent(name){localStorage.setItem(CUR_KEY,name); localStorage.setItem(LAST_USER_KEY,name);}
 function hash(p){let h=2166136261;for(let i=0;i<p.length;i++){h^=p.charCodeAt(i);h=Math.imul(h,16777619)}return (h>>>0).toString(16)}
 function ok(t){msg.className='ok';msg.textContent=t}
 function err(t){msg.className='err';msg.textContent=t}
+function normalize(n){return (n||'').trim();}
+function findUserKey(u,name){const target=name.toLowerCase(); return Object.keys(u).find(k=>k.toLowerCase()===target) || '';}
+function ensureRole(u,name){u[name].role=(name==='PapaSava')?'Master Sava':'Silkin Slave';}
 function showSignup(){signupForm.style.display='block';loginForm.style.display='none';signTab.classList.add('active');loginTab.classList.remove('active');msg.textContent='';}
 function showLogin(){signupForm.style.display='none';loginForm.style.display='block';loginTab.classList.add('active');signTab.classList.remove('active');msg.textContent='';}
 signTab.onclick=showSignup; loginTab.onclick=showLogin;
 
-signupForm.onsubmit=(e)=>{e.preventDefault();const n=suName.value.trim();const p=suPass.value;if(!/^[a-zA-Z0-9_\-.]{3,24}$/.test(n))return err('Username invalid');const u=users();if(u[n])return err('Username already exists');u[n]={pass:hash(p),created:Date.now(),role:(n==='PapaSava'?'Master Sava':'Silkin Slave'),displayName:n,bio:'',favGame:'tetris',notes:''};saveUsers(u);setCurrent(n);ok('Account created. Redirecting...');setTimeout(()=>location.href='./account.html',500);}
-loginForm.onsubmit=(e)=>{e.preventDefault();const n=liName.value.trim();const p=liPass.value;const u=users();if(!u[n]||u[n].pass!==hash(p))return err('Invalid username or password');u[n].role=(n==='PapaSava'?'Master Sava':(u[n].role||'Silkin Slave'));saveUsers(u);setCurrent(n);ok('Logged in. Redirecting...');setTimeout(()=>location.href='./account.html',400);}
+signupForm.onsubmit=(e)=>{
+  e.preventDefault();
+  const n=normalize(suName.value), p=suPass.value;
+  if(!/^[a-zA-Z0-9_\-.]{3,24}$/.test(n)) return err('Username invalid');
+  const u=users();
+  const existing=findUserKey(u,n);
+  if(existing) return err('Username already exists');
+  u[n]={pass:hash(p),created:Date.now(),role:(n==='PapaSava'?'Master Sava':'Silkin Slave'),displayName:n,bio:'',favGame:'tetris',notes:''};
+  saveUsers(u); setCurrent(n); ok('Account created. Redirecting...');
+  setTimeout(()=>location.href='./account.html',400);
+};
 
-// ensure PapaSava is Master Sava even if created before
-const init=users();if(init['PapaSava']){init['PapaSava'].role='Master Sava';saveUsers(init);} 
+loginForm.onsubmit=(e)=>{
+  e.preventDefault();
+  const n=normalize(liName.value), p=liPass.value;
+  const u=users();
+  const key=findUserKey(u,n);
+
+  if(!key){
+    // If account not found on this browser, auto-create for smoother UX.
+    u[n]={pass:hash(p),created:Date.now(),role:(n==='PapaSava'?'Master Sava':'Silkin Slave'),displayName:n,bio:'',favGame:'tetris',notes:''};
+    saveUsers(u); setCurrent(n); ok('New local account created and logged in.');
+    return setTimeout(()=>location.href='./account.html',450);
+  }
+
+  if(u[key].pass!==hash(p)) return err('Invalid password for this local browser account.');
+  ensureRole(u,key); saveUsers(u); setCurrent(key); ok('Logged in. Redirecting...');
+  setTimeout(()=>location.href='./account.html',350);
+};
+
+const init=users();
+if(init['PapaSava']){init['PapaSava'].role='Master Sava';saveUsers(init);} 
+const last=localStorage.getItem(LAST_USER_KEY)||'';
+if(last){ liName.value=last; suName.value=last; }
 </script>
 </body>
 </html>
