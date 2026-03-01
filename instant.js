@@ -162,4 +162,29 @@ const api = {
   }
 };
 
+api.ready = Promise.resolve(api);
+api.waitReady = async function(timeoutMs=6000){
+  const start=Date.now();
+  while(!window.InstantSync && Date.now()-start<timeoutMs){ await new Promise(r=>setTimeout(r,60)); }
+  return window.InstantSync||api;
+};
+
+api.syncLocalShadow = async function(){
+  const cur = localStorage.getItem('sava_current_user_v1') || '';
+  if(!cur) return null;
+  const localUsers = JSON.parse(localStorage.getItem('sava_users_v1')||'{}');
+  const lu = localUsers[cur] || null;
+  const remote = await findUserByName(cur);
+  if(remote && lu){
+    await db.transact(db.tx.users[remote.id].update({
+      displayName: lu.displayName || remote.displayName || cur,
+      bio: lu.bio || remote.bio || '',
+      favGame: lu.favGame || remote.favGame || 'tetris',
+      notes: lu.notes || remote.notes || '',
+      updatedAt: Date.now(),
+    }));
+  }
+  return true;
+};
+
 window.InstantSync = api;

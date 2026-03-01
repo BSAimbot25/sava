@@ -43,6 +43,8 @@
       <section class="card">
         <h3>Profile</h3>
         <label>Display Name</label><input id="displayName" />
+        <label>Avatar URL</label><input id="avatarUrl" placeholder="https://..." />
+        <label>Status</label><input id="statusText" placeholder="Grinding Snus Clicker" />
         <label>Bio</label><textarea id="bio"></textarea>
         <label>Favorite Game</label>
         <select id="favGame">
@@ -53,6 +55,8 @@
 
       <section class="card">
         <h3>My Records</h3>
+        <p class="muted">Joined: <span id="joinedAt">-</span></p>
+        <p class="muted">Best Score: <span id="bestScore">0</span></p>
         <ul id="records"></ul>
       </section>
 
@@ -94,12 +98,15 @@ async function loadAccount(){
   roleBadge.textContent=user.role||'Silkin Slave';
   roleBadge.className='role '+((user.role||'Silkin Slave')==='Master Sava'?'master':'slave');
   displayName.value=user.displayName||current;
+  avatarUrl.value=user.avatarUrl||'';
+  statusText.value=user.statusText||'';
   bio.value=user.bio||'';
   favGame.value=user.favGame||'tetris';
   notes.value=user.notes||'';
+  joinedAt.textContent = new Date(user.createdAt || Date.now()).toLocaleString();
 
   saveProfile.onclick=async ()=>{
-    const patch={displayName:displayName.value.trim()||current,bio:bio.value,favGame:favGame.value,notes:notes.value};
+    const patch={displayName:displayName.value.trim()||current,avatarUrl:avatarUrl.value.trim(),statusText:statusText.value.trim(),bio:bio.value,favGame:favGame.value,notes:notes.value};
     if(window.InstantSync){ try{ await window.InstantSync.saveProfile(current,patch);}catch{} }
     const all=users(); all[current]=all[current]||{}; Object.assign(all[current],patch,{role:(current==='PapaSava')?'Master Sava':'Silkin Slave'}); saveUsers(all);
     alert('Profile saved');
@@ -116,6 +123,8 @@ async function loadAccount(){
   if(window.InstantSync){
     try{
       const mine=await window.InstantSync.fetchUserScores(current);
+      const best = mine.reduce((m,r)=>Math.max(m,Number(r.score||0)),0);
+      bestScore.textContent = Math.floor(best).toLocaleString();
       records.innerHTML=mine.length?mine.slice(0,20).map(r=>`<li><strong>${r.game}</strong>: ${Math.floor(r.score)}</li>`).join(''):'<li>No records yet</li>';
       return;
     }catch{}
@@ -124,6 +133,8 @@ async function loadAccount(){
   const rec=scores().records||{}; const mine=[];
   for(const [g,arr] of Object.entries(rec)){for(const r of arr||[]){if((r.name||'')===current) mine.push({g,score:r.score||0});}}
   mine.sort((a,b)=>b.score-a.score);
+  const bestLocal = mine.reduce((m,r)=>Math.max(m,Number(r.score||0)),0);
+  bestScore.textContent = Math.floor(bestLocal).toLocaleString();
   records.innerHTML=mine.length?mine.slice(0,20).map(r=>`<li><strong>${r.g}</strong>: ${Math.floor(r.score)}</li>`).join(''):'<li>No records yet</li>';
 }
 

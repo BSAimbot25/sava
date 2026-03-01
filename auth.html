@@ -68,16 +68,17 @@ signupForm.onsubmit=async (e)=>{
   const n=normalize(suName.value), p=suPass.value;
   if(!/^[a-zA-Z0-9_\-.]{3,24}$/.test(n)) return err('Username invalid');
   try{
-    if(window.InstantSync){
-      const uInstant = await window.InstantSync.register(n,p);
+    const sync = window.InstantSync || await import('./instant.js').then(()=>window.InstantSync).catch(()=>null);
+    if(sync){
+      const uInstant = await sync.register(n,p);
       const uLocal=users();
       uLocal[uInstant.username]={pass:hash(p),created:Date.now(),role:uInstant.role||'Silkin Slave',displayName:uInstant.displayName||uInstant.username,bio:uInstant.bio||'',favGame:uInstant.favGame||'tetris',notes:uInstant.notes||''};
       saveUsers(uLocal);
       setCurrent(uInstant.username);
-      ok('Account synced to InstantDB. Redirecting...');
+      ok('Account synced to cloud. Redirecting...');
       return setTimeout(()=>location.href='./account.html',350);
     }
-  }catch(ex){ return err(ex.message||'InstantDB signup failed'); }
+  }catch(ex){ return err(ex.message||'Cloud signup failed'); }
 
   // fallback local
   const u=users();
@@ -92,13 +93,14 @@ loginForm.onsubmit=async (e)=>{
   e.preventDefault();
   const n=normalize(liName.value), p=liPass.value;
   try{
-    if(window.InstantSync){
-      const uInstant = await window.InstantSync.login(n,p);
+    const sync = window.InstantSync || await import('./instant.js').then(()=>window.InstantSync).catch(()=>null);
+    if(sync){
+      const uInstant = await sync.login(n,p);
       const uLocal=users();
       uLocal[uInstant.username]={pass:hash(p),created:uLocal[uInstant.username]?.created||Date.now(),role:uInstant.role||'Silkin Slave',displayName:uInstant.displayName||uInstant.username,bio:uInstant.bio||'',favGame:uInstant.favGame||'tetris',notes:uInstant.notes||''};
       saveUsers(uLocal);
       setCurrent(uInstant.username);
-      ok('Logged in from InstantDB. Redirecting...');
+      ok('Logged in and synced. Redirecting...');
       return setTimeout(()=>location.href='./account.html',300);
     }
   }catch(ex){ return err(ex.message||'Login failed'); }
