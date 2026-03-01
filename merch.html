@@ -13,8 +13,8 @@
     .note{background:#171b33;border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:10px 12px;margin-bottom:12px;color:#d9dcff}
     .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
     .card{background:#171b33;border:1px solid rgba(255,255,255,.16);border-radius:14px;overflow:hidden}
-    .imgs{display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px solid rgba(255,255,255,.12)}
-    .imgs .shot{position:relative}
+    .imgs{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid rgba(255,255,255,.12)}
+    .shot{position:relative}
     .imgs img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:#0f1224}
     .label{position:absolute;left:8px;top:8px;background:rgba(0,0,0,.65);padding:4px 8px;border-radius:999px;font-size:.72rem;font-weight:700}
     .meta{padding:10px}
@@ -31,60 +31,63 @@
 
 <main class="wrap">
   <div class="note">
-    Curated for cheaper-but-good options (men focus) + 2 baby joke items.<br/>
-    Every product has front and back shown clearly. Pricing kept as requested.
+    Updated names (Sava / Saveliy / Winchester), phone case + mug added back, and front/back shown clearly.
   </div>
-
   <section class="grid" id="grid"></section>
 </main>
 
 <script>
 const products = [
   {
-    title:'Master Drop Men Tee',
-    variants:100,
+    title:'Winchester Tee', variants:100,
     front:'https://images-api.printify.com/mockup/69a4351a46730b56700a60dc/38191/97992/master-drop-men-tee.jpg?camera_label=front',
     back:'https://images-api.printify.com/mockup/69a4351a46730b56700a60dc/38191/97993/master-drop-men-tee.jpg?camera_label=back',
     url:'https://pouchmastersava.printify.me/product/27107159'
   },
   {
-    title:'Master Drop Men Hoodie',
-    variants:40,
+    title:'Sava Hoodie', variants:40,
     front:'https://images-api.printify.com/mockup/69a436897fc2996b8d0ab4eb/63772/4765/master-drop-men-hoodie.jpg?camera_label=front',
     back:'https://images-api.printify.com/mockup/69a436897fc2996b8d0ab4eb/63772/4770/master-drop-men-hoodie.jpg?camera_label=back',
     url:'https://pouchmastersava.printify.me/product/27107301'
   },
   {
-    title:'Master Drop Men Sweatshirt',
-    variants:45,
+    title:'Saveliy Sweatshirt', variants:45,
     front:'https://images-api.printify.com/mockup/69a435a83b12a90c8e08b30c/68016/99286/master-drop-men-sweatshirt.jpg?camera_label=front',
     back:'https://images-api.printify.com/mockup/69a435a83b12a90c8e08b30c/68016/99287/master-drop-men-sweatshirt.jpg?camera_label=back',
     url:'https://pouchmastersava.printify.me/product/27107184'
   },
   {
-    title:'Master Classic Sweatshirt',
-    variants:100,
+    title:'Sava Classic Crew', variants:100,
     front:'https://images-api.printify.com/mockup/69a435cf7fc2996b8d0ab499/36121/234/master-classic-sweatshirt.jpg?camera_label=front',
     back:'https://images-api.printify.com/mockup/69a435cf7fc2996b8d0ab499/36121/235/master-classic-sweatshirt.jpg?camera_label=back',
     url:'https://pouchmastersava.printify.me/product/27107191'
   },
   {
-    title:'Master Oversized Tee',
-    variants:35,
+    title:'Saveliy Oversized Tee', variants:35,
     front:'https://images-api.printify.com/mockup/69a435b57ab6ca0074090994/156064/118466/master-oversized-tee.jpg?camera_label=front-side',
     back:'https://images-api.printify.com/mockup/69a435b57ab6ca0074090994/156064/118467/master-oversized-tee.jpg?camera_label=back-side',
     url:'https://pouchmastersava.printify.me/product/27107185'
   },
   {
-    title:'Joke Baby Tee',
-    variants:13,
+    title:'Sava Phone Case', variants:32,
+    front:'https://images-api.printify.com/mockup/69a438c9eb470f86b105f273/62582/97458/sava-phone-case.jpg?camera_label=front-and-side',
+    back:'https://images-api.printify.com/mockup/69a438c9eb470f86b105f273/62582/97459/sava-phone-case.jpg?camera_label=back-and-side',
+    url:'https://pouchmastersava.printify.me/product/27107339'
+  },
+  {
+    title:'Sava Mug', variants:1,
+    front:'https://images-api.printify.com/mockup/69a438c03b12a90c8e08b3c9/67624/7674/sava-mug.jpg?camera_label=front',
+    back:'https://images-api.printify.com/mockup/69a438c03b12a90c8e08b3c9/67624/7675/sava-mug.jpg?camera_label=back',
+    url:'https://pouchmastersava.printify.me/product/27107336'
+  },
+  {
+    title:'Sava Baby Tee (Joke)', variants:13,
     front:'https://images-api.printify.com/mockup/69a435fa1ec5ca402c03737a/95962/81229/joke-baby-tee.jpg?camera_label=front',
     back:'https://images-api.printify.com/mockup/69a435fa1ec5ca402c03737a/95962/81241/joke-baby-tee.jpg?camera_label=back',
     url:'https://pouchmastersava.printify.me/product/27107208'
   },
   {
-    title:'Joke Toddler Tee',
-    variants:2,
+    title:'Winchester Toddler Tee (Joke)', variants:2,
     front:'https://images-api.printify.com/mockup/69a436087ab6ca00740909bb/72048/100703/joke-toddler-tee.jpg?camera_label=front',
     back:'https://images-api.printify.com/mockup/69a436087ab6ca00740909bb/72048/100704/joke-toddler-tee.jpg?camera_label=back',
     url:'https://pouchmastersava.printify.me/product/27107209'
@@ -97,8 +100,8 @@ products.forEach(p => {
   card.className = 'card';
   card.innerHTML = `
     <div class="imgs">
-      <div class="shot"><img src="${p.front}" alt="${p.title} front" loading="lazy"/><span class="label">Front</span></div>
-      <div class="shot"><img src="${p.back}" alt="${p.title} back" loading="lazy"/><span class="label">Back</span></div>
+      <div class="shot"><img src="${p.front}" alt="${p.title} front" loading="lazy"><span class="label">Front</span></div>
+      <div class="shot"><img src="${p.back}" alt="${p.title} back" loading="lazy"><span class="label">Back</span></div>
     </div>
     <div class="meta">
       <h3>${p.title}</h3>
