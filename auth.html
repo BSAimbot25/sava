@@ -46,6 +46,7 @@
     </section>
   </div>
 
+<script type="module" src="./instant.js"></script>
 <script>
 const USERS_KEY='sava_users_v1', CUR_KEY='sava_current_user_v1', LAST_USER_KEY='sava_last_user_v1';
 const msg=document.getElementById('msg');
@@ -62,10 +63,20 @@ function showSignup(){signupForm.style.display='block';loginForm.style.display='
 function showLogin(){signupForm.style.display='none';loginForm.style.display='block';loginTab.classList.add('active');signTab.classList.remove('active');msg.textContent='';}
 signTab.onclick=showSignup; loginTab.onclick=showLogin;
 
-signupForm.onsubmit=(e)=>{
+signupForm.onsubmit=async (e)=>{
   e.preventDefault();
   const n=normalize(suName.value), p=suPass.value;
   if(!/^[a-zA-Z0-9_\-.]{3,24}$/.test(n)) return err('Username invalid');
+  try{
+    if(window.InstantSync){
+      await window.InstantSync.createOrLogin(n,p);
+      setCurrent(n);
+      ok('Account synced to InstantDB. Redirecting...');
+      return setTimeout(()=>location.href='./account.html',350);
+    }
+  }catch(ex){ return err(ex.message||'InstantDB signup failed'); }
+
+  // fallback local
   const u=users();
   const existing=findUserKey(u,n);
   if(existing) return err('Username already exists');
@@ -74,20 +85,22 @@ signupForm.onsubmit=(e)=>{
   setTimeout(()=>location.href='./account.html',400);
 };
 
-loginForm.onsubmit=(e)=>{
+loginForm.onsubmit=async (e)=>{
   e.preventDefault();
   const n=normalize(liName.value), p=liPass.value;
+  try{
+    if(window.InstantSync){
+      await window.InstantSync.createOrLogin(n,p);
+      setCurrent(n);
+      ok('Logged in from InstantDB. Redirecting...');
+      return setTimeout(()=>location.href='./account.html',300);
+    }
+  }catch(ex){ return err(ex.message||'Login failed'); }
+
   const u=users();
   const key=findUserKey(u,n);
-
-  if(!key){
-    // If account not found on this browser, auto-create for smoother UX.
-    u[n]={pass:hash(p),created:Date.now(),role:(n==='PapaSava'?'Master Sava':'Silkin Slave'),displayName:n,bio:'',favGame:'tetris',notes:''};
-    saveUsers(u); setCurrent(n); ok('New local account created and logged in.');
-    return setTimeout(()=>location.href='./account.html',450);
-  }
-
-  if(u[key].pass!==hash(p)) return err('Invalid password for this local browser account.');
+  if(!key) return err('User not found');
+  if(u[key].pass!==hash(p)) return err('Invalid password');
   ensureRole(u,key); saveUsers(u); setCurrent(key); ok('Logged in. Redirecting...');
   setTimeout(()=>location.href='./account.html',350);
 };

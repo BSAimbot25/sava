@@ -42,6 +42,7 @@
     </section>
   </div>
 
+<script type="module" src="./instant.js"></script>
 <script>
 const KEY='sava_arcade_v1';
 const CUR_KEY='sava_current_user_v1';
@@ -58,14 +59,20 @@ function ensure(){
   }
   return d;
 }
-function gameLabel(g){return ({tetris:'Tetris',dodge:'Dodge',snake:'Snake',pong:'Pong',clicker:'Clicker',memory:'Memory'})[g]||g}
+function gameLabel(g){return ({tetris:'Tetris',dodge:'Dodge',snake:'Snake',pong:'Pong',clicker:'Clicker',memory:'Memory',snus:'Snus Clicker'})[g]||g}
 async function render(){const d=ensure(); document.getElementById('playerName').textContent=d.player;
   const el=document.getElementById('leader'); el.innerHTML='<li>Loading...</li>';
   try{
-    const r=await fetch('/api/leaderboard');
-    const j=await r.json();
+    let boards=null;
+    if(window.InstantSync){
+      boards=await window.InstantSync.fetchBoards(['tetris','dodge','snake','pong','clicker','memory','snus']);
+    }else{
+      const r=await fetch('/api/leaderboard');
+      const j=await r.json();
+      boards=j.boards||{};
+    }
     const all=[];
-    for(const [g,rows] of Object.entries(j.boards||{})){ for(const row of rows){ all.push({name:row.name,score:row.score,game:g}); } }
+    for(const [g,rows] of Object.entries(boards||{})){ for(const row of rows){ all.push({name:row.name,score:row.score,game:g}); } }
     all.sort((a,b)=>b.score-a.score);
     el.innerHTML=(all.slice(0,20).map(r=>`<li><strong>${r.name}</strong> — ${gameLabel(r.game)}: ${Math.floor(r.score)}</li>`).join('')||'<li>No records yet</li>');
   }catch{

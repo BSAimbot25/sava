@@ -63,6 +63,7 @@
     </div>
   </div>
 
+<script type="module" src="./instant.js"></script>
 <script>
 const USERS_KEY='sava_users_v1', CUR_KEY='sava_current_user_v1', SCORE_KEY='sava_arcade_v1';
 function users(){try{return JSON.parse(localStorage.getItem(USERS_KEY)||'{}')}catch{return {}}}
@@ -70,49 +71,57 @@ function saveUsers(u){localStorage.setItem(USERS_KEY,JSON.stringify(u));}
 function scores(){try{return JSON.parse(localStorage.getItem(SCORE_KEY)||'{}')}catch{return {}}}
 const current=localStorage.getItem(CUR_KEY)||'';
 if(!current){ location.href='./auth.html'; }
-const u=users();
-if(!u[current]){ location.href='./auth.html'; }
 
-// enforce role policy
-u[current].role = (current==='PapaSava') ? 'Master Sava' : (u[current].role || 'Silkin Slave');
-saveUsers(u);
+async function loadAccount(){
+  let user=null;
+  if(window.InstantSync){
+    try{ user = await window.InstantSync.getCurrentUser(); }catch{}
+  }
+  if(!user){
+    const u=users();
+    if(!u[current]){ location.href='./auth.html'; return; }
+    u[current].role = (current==='PapaSava') ? 'Master Sava' : (u[current].role || 'Silkin Slave');
+    saveUsers(u); user=u[current];
+  }
 
-const user=u[current];
-who.textContent=`Signed in as ${current}`;
-roleBadge.textContent=user.role;
-roleBadge.className='role '+(user.role==='Master Sava'?'master':'slave');
+  who.textContent=`Signed in as ${current}`;
+  roleBadge.textContent=user.role||'Silkin Slave';
+  roleBadge.className='role '+((user.role||'Silkin Slave')==='Master Sava'?'master':'slave');
+  displayName.value=user.displayName||current;
+  bio.value=user.bio||'';
+  favGame.value=user.favGame||'tetris';
+  notes.value=user.notes||'';
 
-displayName.value=user.displayName||current;
-bio.value=user.bio||'';
-favGame.value=user.favGame||'tetris';
-notes.value=user.notes||'';
+  saveProfile.onclick=async ()=>{
+    const patch={displayName:displayName.value.trim()||current,bio:bio.value,favGame:favGame.value,notes:notes.value};
+    if(window.InstantSync){ try{ await window.InstantSync.saveProfile(current,patch);}catch{} }
+    const all=users(); all[current]=all[current]||{}; Object.assign(all[current],patch,{role:(current==='PapaSava')?'Master Sava':'Silkin Slave'}); saveUsers(all);
+    alert('Profile saved');
+  };
 
-saveProfile.onclick=()=>{
-  const all=users();
-  all[current]=all[current]||{};
-  all[current].displayName=displayName.value.trim()||current;
-  all[current].bio=bio.value;
-  all[current].favGame=favGame.value;
-  all[current].role=(current==='PapaSava')?'Master Sava':'Silkin Slave';
-  saveUsers(all);
-  alert('Profile saved');
-};
+  saveNotes.onclick=async ()=>{
+    if(window.InstantSync){ try{ await window.InstantSync.saveProfile(current,{notes:notes.value}); }catch{} }
+    const all=users(); all[current]=all[current]||{}; all[current].notes=notes.value; saveUsers(all);
+    alert('Notes saved');
+  };
 
-saveNotes.onclick=()=>{
-  const all=users();
-  all[current]=all[current]||{};
-  all[current].notes=notes.value;
-  saveUsers(all);
-  alert('Notes saved');
-};
+  logout.onclick=()=>{localStorage.removeItem(CUR_KEY);location.href='./auth.html';};
 
-logout.onclick=()=>{localStorage.removeItem(CUR_KEY);location.href='./auth.html';};
+  if(window.InstantSync){
+    try{
+      const mine=await window.InstantSync.fetchUserScores(current);
+      records.innerHTML=mine.length?mine.slice(0,20).map(r=>`<li><strong>${r.game}</strong>: ${Math.floor(r.score)}</li>`).join(''):'<li>No records yet</li>';
+      return;
+    }catch{}
+  }
 
-const rec=scores().records||{};
-const mine=[];
-for(const [g,arr] of Object.entries(rec)){for(const r of arr||[]){if((r.name||'')===current) mine.push({g,score:r.score||0});}}
-mine.sort((a,b)=>b.score-a.score);
-records.innerHTML=mine.length?mine.slice(0,20).map(r=>`<li><strong>${r.g}</strong>: ${Math.floor(r.score)}</li>`).join(''):'<li>No records yet</li>';
+  const rec=scores().records||{}; const mine=[];
+  for(const [g,arr] of Object.entries(rec)){for(const r of arr||[]){if((r.name||'')===current) mine.push({g,score:r.score||0});}}
+  mine.sort((a,b)=>b.score-a.score);
+  records.innerHTML=mine.length?mine.slice(0,20).map(r=>`<li><strong>${r.g}</strong>: ${Math.floor(r.score)}</li>`).join(''):'<li>No records yet</li>';
+}
+
+loadAccount();
 </script>
 </body>
 </html>
