@@ -1,147 +1,51 @@
 <!doctype html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sava Product Customizer Demo</title>
-  <style>
-    :root{--bg:#0b1020;--card:#171f3a;--text:#fff;--muted:#a8b3d9;--accent:#ffe700;--ok:#00ffc8}
-    *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui;background:var(--bg);color:var(--text)}
-    .top{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid #2a3357;background:#101833}
-    .btn{background:var(--accent);color:#111;text-decoration:none;padding:8px 12px;border-radius:999px;font-weight:800}
-    .wrap{width:min(1280px,calc(100% - 22px));margin:14px auto;display:grid;grid-template-columns:1fr 1.05fr;gap:12px}
-    .panel{background:var(--card);border:1px solid #2a3357;border-radius:14px;padding:12px}
-    h2{margin:0 0 8px}.muted{color:var(--muted)}
-    .productGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;max-height:360px;overflow:auto}
-    .product{background:#101833;border:1px solid #2b3762;border-radius:10px;padding:8px;cursor:pointer;text-align:left;color:#fff}
-    .product.active{outline:2px solid var(--accent)}
-    .pname{font-weight:800;font-size:.92rem}.ptag{font-size:.78rem;color:#9fb0e2;margin-top:2px}
-    .thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:8px;max-height:290px;overflow:auto}
-    .thumb{border:2px solid transparent;border-radius:10px;overflow:hidden;cursor:pointer;height:70px;background:#0f1530}
-    .thumb.active{border-color:var(--ok)} .thumb img{width:100%;height:100%;object-fit:cover;display:block}
-
-    .previewWrap{background:#0e1532;border:1px solid #2b3762;border-radius:12px;padding:10px}
-    .preview{position:relative;border-radius:12px;overflow:hidden;background:radial-gradient(circle at 50% 0%,#1a2a58,#0a1030 62%);aspect-ratio:1/1;max-width:560px;margin:auto;display:grid;place-items:center}
-    .mock{position:relative;display:none}
-    .mock.active{display:block}
-
-    /* clean base templates (no baked-in prints) */
-    .tee,.tank,.sweat{width:320px;height:360px;background:linear-gradient(180deg,#f9f9f9,#ececec);border-radius:26px 26px 34px 34px;box-shadow:0 18px 32px #0007}
-    .tee:before,.tee:after,.tank:before,.tank:after,.sweat:before,.sweat:after{content:'';position:absolute;top:28px;width:74px;height:96px;background:linear-gradient(180deg,#f9f9f9,#ececec);border-radius:18px}
-    .tee:before,.sweat:before{left:-50px;transform:rotate(20deg)} .tee:after,.sweat:after{right:-50px;transform:rotate(-20deg)}
-    .tank:before{left:-42px;transform:rotate(16deg)} .tank:after{right:-42px;transform:rotate(-16deg)} .tank:before,.tank:after{height:76px}
-    .sweat{background:linear-gradient(180deg,#fafafa,#efefef)}
-
-    .mug{width:320px;height:220px;background:linear-gradient(180deg,#fcfcfc,#efefef);border-radius:20px;box-shadow:0 18px 28px #0007}
-    .mug:after{content:'';position:absolute;right:-48px;top:56px;width:64px;height:96px;border:13px solid #ececec;border-left:none;border-radius:0 36px 36px 0}
-    .phone{width:220px;height:430px;background:linear-gradient(180deg,#222,#131313);border-radius:28px;border:3px solid #222;box-shadow:0 18px 28px #0007}
-    .flat{width:360px;height:360px;background:linear-gradient(180deg,#fff,#f2f2f2);border-radius:18px;box-shadow:0 18px 28px #0007}
-    .rect{width:380px;height:260px;background:linear-gradient(180deg,#f7f7f7,#ececec);border-radius:16px;box-shadow:0 18px 28px #0007}
-    .notebook{width:300px;height:420px;background:linear-gradient(180deg,#fff,#f1f1f1);border-radius:12px;box-shadow:0 18px 28px #0007}
-    .notebook:before{content:'';position:absolute;left:20px;top:0;bottom:0;width:10px;background:repeating-linear-gradient(to bottom,#bdbdbd 0 8px,transparent 8px 14px)}
-    .tote{width:320px;height:360px;background:linear-gradient(180deg,#f5efe4,#e6dccd);border-radius:10px;box-shadow:0 18px 28px #0007}
-    .tote:before,.tote:after{content:'';position:absolute;top:-55px;width:90px;height:90px;border:10px solid #d9d2c5;border-bottom:none;border-radius:60px 60px 0 0}
-    .tote:before{left:36px}.tote:after{right:36px}
-
-    .design{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);overflow:hidden;background:#fff;border-radius:0}
-    .design img{width:100%;height:100%;object-fit:cover;display:block}
-
-    .meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-    .pill{background:#101833;border:1px solid #2b3762;border-radius:999px;padding:6px 10px;font-size:.9rem}
-    @media (max-width:980px){.wrap{grid-template-columns:1fr}.preview{max-width:100%}}
-  </style>
-</head>
-<body>
-  <header class="top">
-    <strong>Customizer Demo (Clean Base Set)</strong>
-    <a class="btn" href="./merch.html">Back to Merch</a>
-  </header>
-
-  <main class="wrap">
-    <section class="panel">
-      <h2>1) Pick product</h2>
-      <div class="muted">All preview bases are clean (no old printed image underneath).</div>
-      <div class="productGrid" id="products"></div>
-      <h2 style="margin-top:12px">2) Pick design image</h2>
-      <div class="thumbs" id="thumbs"></div>
-    </section>
-
-    <section class="panel">
-      <h2>Live Preview</h2>
-      <div class="previewWrap">
-        <div class="preview">
-          <div class="mock" id="mock-shirt"><div class="tee"></div><div class="design" id="d-shirt"><img id="img-shirt"></div></div>
-          <div class="mock" id="mock-tank"><div class="tank"></div><div class="design" id="d-tank"><img id="img-tank"></div></div>
-          <div class="mock" id="mock-sweat"><div class="sweat"></div><div class="design" id="d-sweat"><img id="img-sweat"></div></div>
-          <div class="mock" id="mock-mug"><div class="mug"></div><div class="design" id="d-mug"><img id="img-mug"></div></div>
-          <div class="mock" id="mock-phone"><div class="phone"></div><div class="design" id="d-phone"><img id="img-phone"></div></div>
-          <div class="mock" id="mock-flat"><div class="flat"></div><div class="design" id="d-flat"><img id="img-flat"></div></div>
-          <div class="mock" id="mock-rect"><div class="rect"></div><div class="design" id="d-rect"><img id="img-rect"></div></div>
-          <div class="mock" id="mock-notebook"><div class="notebook"></div><div class="design" id="d-notebook"><img id="img-notebook"></div></div>
-          <div class="mock" id="mock-tote"><div class="tote"></div><div class="design" id="d-tote"><img id="img-tote"></div></div>
-        </div>
-      </div>
-      <div class="meta">
-        <div class="pill">Selected product: <b id="chosenProduct"></b></div>
-        <div class="pill">Selected image: <b id="chosenImage"></b></div>
-        <div class="pill">Category: <b id="chosenCategory"></b></div>
-      </div>
-    </section>
-  </main>
-
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Customizer Demo</title>
+<style>
+:root{--bg:#0b1020;--card:#171f3a;--text:#fff;--muted:#a8b3d9;--accent:#ffe700;--ok:#00ffc8}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui;background:var(--bg);color:var(--text)}
+.top{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid #2a3357;background:#101833}.btn{background:var(--accent);color:#111;text-decoration:none;padding:8px 12px;border-radius:999px;font-weight:800}
+.wrap{width:min(1280px,calc(100% - 20px));margin:14px auto;display:grid;grid-template-columns:1fr 1fr;gap:12px}.panel{background:var(--card);border:1px solid #2a3357;border-radius:14px;padding:12px}
+.productGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;max-height:360px;overflow:auto}.product{background:#101833;border:1px solid #2b3762;border-radius:10px;padding:8px;cursor:pointer;color:#fff;text-align:left}.product.active{outline:2px solid var(--accent)}.pname{font-weight:800;font-size:.92rem}.ptag{font-size:.78rem;color:#9fb0e2}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:8px;max-height:260px;overflow:auto}.thumb{height:70px;border:2px solid transparent;border-radius:10px;overflow:hidden;cursor:pointer;background:#0f1530}.thumb.active{border-color:var(--ok)}.thumb img{width:100%;height:100%;object-fit:cover}
+.preview{position:relative;aspect-ratio:1/1;max-width:560px;margin:auto;border-radius:12px;overflow:hidden;background:#0a1030}.base{width:100%;height:100%;object-fit:contain;display:block}
+.eraser,.design{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
+.eraser{border-radius:12px;filter:blur(3px);opacity:.95}
+.design{overflow:hidden;border-radius:8px}.design img{width:100%;height:100%;object-fit:cover;display:block}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.pill{background:#101833;border:1px solid #2b3762;border-radius:999px;padding:6px 10px;font-size:.9rem}.muted{color:var(--muted)}
+@media (max-width:980px){.wrap{grid-template-columns:1fr}}
+</style></head><body>
+<header class="top"><strong>Customizer Demo (Fixed Real Mockups)</strong><a class="btn" href="./merch.html">Back</a></header>
+<main class="wrap"><section class="panel"><h2>1) Product</h2><div class="muted">Real product photo + soft cleanup to hide old print without white box.</div><div class="productGrid" id="products"></div><h2 style="margin-top:12px">2) Design image</h2><div class="thumbs" id="thumbs"></div></section>
+<section class="panel"><h2>Live Preview</h2><div class="preview"><img class="base" id="baseImg" alt="mockup"><div class="eraser" id="eraser"></div><div class="design" id="design"><img id="designImg" alt="design"></div></div><div class="meta"><div class="pill">Product: <b id="chosenProduct"></b></div><div class="pill">Image: <b id="chosenImage"></b></div><div class="pill">Category: <b id="chosenCategory"></b></div></div></section></main>
 <script>
 const products=[
-  {name:'Winchester Tee',cat:'Clothing',view:'shirt',box:{w:128,h:146}},
-  {name:'Sava Tee',cat:'Clothing',view:'shirt',box:{w:128,h:146}},
-  {name:'Saveliy Tee',cat:'Clothing',view:'shirt',box:{w:128,h:146}},
-  {name:'Winchester Tank',cat:'Clothing',view:'tank',box:{w:134,h:160}},
-  {name:'Sava Heavy Cotton Tank',cat:'Clothing',view:'tank',box:{w:134,h:160}},
-  {name:'Saveliy Kids Sweatshirt',cat:'Clothing',view:'sweat',box:{w:122,h:138}},
-  {name:'Sava Baby Tee',cat:'Clothing',view:'shirt',box:{w:118,h:132}},
-  {name:'Winchester Toddler Tee',cat:'Clothing',view:'shirt',box:{w:118,h:132}},
-  {name:'Sava Mug',cat:'Accessories',view:'mug',box:{w:190,h:130}},
-  {name:'Sava Phone Case',cat:'Accessories',view:'phone',box:{w:164,h:292}},
-  {name:'Sava Sticker Pack',cat:'Accessories',view:'flat',box:{w:248,h:248}},
-  {name:'Saveliy Die-Cut Stickers',cat:'Accessories',view:'flat',box:{w:248,h:248}},
-  {name:'Winchester Pin Buttons',cat:'Accessories',view:'flat',box:{w:210,h:210}},
-  {name:'Sava Magnets',cat:'Accessories',view:'flat',box:{w:210,h:210}},
-  {name:'Sava Coaster',cat:'Accessories',view:'flat',box:{w:210,h:210}},
-  {name:'Winchester Spiral Notebook',cat:'Accessories',view:'notebook',box:{w:210,h:320}},
-  {name:'Sava Tote Bag',cat:'Accessories',view:'tote',box:{w:200,h:230}},
-  {name:'Saveliy Mouse Pad',cat:'Accessories',view:'rect',box:{w:290,h:172}}
+{name:'Winchester Tee',cat:'Clothing',front:'https://images-api.printify.com/mockup/69a4399b9f7e893e8a0e4941/12100/92570/winchester-tee.jpg?camera_label=front',box:{x:50,y:52,w:25,h:31},mask:'#f0f0f0'},
+{name:'Sava Tee',cat:'Clothing',front:'https://images-api.printify.com/mockup/69a439a7eb470f86b105f29c/12100/92570/sava-tee.jpg?camera_label=front',box:{x:50,y:52,w:25,h:31},mask:'#f0f0f0'},
+{name:'Saveliy Tee',cat:'Clothing',front:'https://images-api.printify.com/mockup/69a439b3414758b6c60315b2/12100/92570/saveliy-tee.jpg?camera_label=front',box:{x:50,y:52,w:25,h:31},mask:'#f0f0f0'},
+{name:'Winchester Tank',cat:'Clothing',front:'https://images-api.printify.com/mockup/69a43a8a46730b56700a6212/24828/101889/winchester-tank.jpg?camera_label=front',box:{x:50,y:52,w:26,h:34},mask:'#f3f3f3'},
+{name:'Sava Heavy Cotton Tank',cat:'Clothing',front:'https://images-api.printify.com/mockup/69a43cc67ab6ca0074090b13/76985/105316/sava-heavy-cotton-tank.jpg?camera_label=front',box:{x:50,y:53,w:26,h:33},mask:'#efefef'},
+{name:'Saveliy Kids Sweatshirt',cat:'Clothing',front:'https://images-api.printify.com/mockup/69a43ccc1ec5ca402c0374f9/31729/301/saveliy-kids-sweatshirt.jpg?camera_label=front',box:{x:50,y:53,w:24,h:30},mask:'#f2f2f2'},
+{name:'Sava Baby Tee',cat:'Clothing',front:'https://images-api.printify.com/mockup/69a43a9346730b56700a6213/95962/81229/sava-baby-tee.jpg?camera_label=front',box:{x:50,y:54,w:24,h:30},mask:'#f3f3f3'},
+{name:'Winchester Toddler Tee',cat:'Clothing',front:'https://images-api.printify.com/mockup/69a43a9d1ec5ca402c037494/72048/100703/winchester-toddler-tee.jpg?camera_label=front',box:{x:50,y:54,w:24,h:30},mask:'#f4f4f4'},
+{name:'Sava Mug',cat:'Accessories',front:'https://images-api.printify.com/mockup/69a43cb73b12a90c8e08b481/67624/7674/sava-mug.jpg?camera_label=front',box:{x:49,y:51,w:32,h:26},mask:'#f9f9f9'},
+{name:'Sava Phone Case',cat:'Accessories',front:'https://images-api.printify.com/mockup/69a43cbf46730b56700a6274/62582/97458/sava-phone-case.jpg?camera_label=front-and-side',box:{x:50,y:52,w:31,h:48},mask:'#f6f6f6'},
+{name:'Sava Sticker Pack',cat:'Accessories',front:'https://images-api.printify.com/mockup/69a45454eb470f86b105f7fb/45747/16654/sava-sticker-pack.jpg?camera_label=front',box:{x:50,y:52,w:45,h:45},mask:'#fff'},
+{name:'Saveliy Die-Cut Stickers',cat:'Accessories',front:'https://images-api.printify.com/mockup/69a4545d7ab6ca0074090fe6/72006/13462/saveliy-die-cut-stickers.jpg?camera_label=front',box:{x:50,y:52,w:45,h:45},mask:'#fff'},
+{name:'Winchester Pin Buttons',cat:'Accessories',front:'https://images-api.printify.com/mockup/69a454689f7e893e8a0e4ef3/62070/98417/winchester-pin-buttons.jpg?camera_label=front',box:{x:50,y:52,w:36,h:36},mask:'#fff'},
+{name:'Sava Magnets',cat:'Accessories',front:'https://images-api.printify.com/mockup/69a4547346730b56700a67a7/62034/3378/sava-magnets.jpg?camera_label=front',box:{x:50,y:52,w:36,h:36},mask:'#fff'},
+{name:'Sava Coaster',cat:'Accessories',front:'https://images-api.printify.com/mockup/69a4547deb470f86b105f806/74633/40573/sava-coaster.jpg?camera_label=front',box:{x:50,y:52,w:35,h:35},mask:'#fff'},
+{name:'Winchester Spiral Notebook',cat:'Accessories',front:'https://images-api.printify.com/mockup/69a4548846730b56700a67af/67981/8315/winchester-spiral-notebook.jpg?camera_label=front',box:{x:50,y:53,w:34,h:45},mask:'#fafafa'},
+{name:'Sava Tote Bag',cat:'Accessories',front:'https://images-api.printify.com/mockup/69a454967fc2996b8d0abaee/64177/5887/sava-tote-bag.jpg?camera_label=front',box:{x:50,y:54,w:32,h:38},mask:'#efe8db'},
+{name:'Saveliy Mouse Pad',cat:'Accessories',front:'https://images-api.printify.com/mockup/69a454a594ca9fbf1d020c90/71664/12239/saveliy-mouse-pad.jpg?camera_label=front',box:{x:50,y:53,w:45,h:27},mask:'#f3f3f3'}
 ];
 const images=[...Array(12)].map((_,i)=>`${i+1}.jpg`);
 let selectedProduct=products[0],selectedImage=images[0];
-const productRoot=document.getElementById('products');
-const thumbsRoot=document.getElementById('thumbs');
-
-function setDesign(view,box){
-  const d=document.getElementById('d-'+view);
-  d.style.width=box.w+'px'; d.style.height=box.h+'px';
-}
-function paint(){
-  document.querySelectorAll('.product').forEach((el,i)=>el.classList.toggle('active',products[i]===selectedProduct));
-  document.querySelectorAll('.thumb').forEach((el,i)=>el.classList.toggle('active',images[i]===selectedImage));
-  document.querySelectorAll('.mock').forEach(el=>el.classList.remove('active'));
-  document.getElementById('mock-'+selectedProduct.view).classList.add('active');
-  document.querySelectorAll('[id^="img-"]').forEach(im=>im.src='./'+selectedImage);
-  setDesign(selectedProduct.view,selectedProduct.box);
-  chosenProduct.textContent=selectedProduct.name;
-  chosenImage.textContent=selectedImage;
-  chosenCategory.textContent=selectedProduct.cat;
-}
-products.forEach((p)=>{
-  const d=document.createElement('button'); d.className='product'; d.type='button';
-  d.innerHTML=`<div class='pname'>${p.name}</div><div class='ptag'>${p.cat}</div>`;
-  d.onclick=()=>{selectedProduct=p;paint();}; productRoot.appendChild(d);
-});
-images.forEach((img)=>{
-  const d=document.createElement('button'); d.className='thumb'; d.type='button';
-  d.innerHTML=`<img src='./${img}' alt='${img}'>`;
-  d.onclick=()=>{selectedImage=img;paint();}; thumbsRoot.appendChild(d);
-});
+const productRoot=document.getElementById('products'),thumbsRoot=document.getElementById('thumbs');
+const baseImg=document.getElementById('baseImg'),eraser=document.getElementById('eraser'),design=document.getElementById('design'),designImg=document.getElementById('designImg');
+function setBoxes(p){const b=p.box; design.style.left=b.x+'%';design.style.top=b.y+'%';design.style.width=b.w+'%';design.style.height=b.h+'%';
+const ms=1.12; eraser.style.left=b.x+'%';eraser.style.top=b.y+'%';eraser.style.width=(b.w*ms)+'%';eraser.style.height=(b.h*ms)+'%';eraser.style.background=p.mask;}
+function paint(){document.querySelectorAll('.product').forEach((el,i)=>el.classList.toggle('active',products[i]===selectedProduct));document.querySelectorAll('.thumb').forEach((el,i)=>el.classList.toggle('active',images[i]===selectedImage));baseImg.src=selectedProduct.front;designImg.src='./'+selectedImage;setBoxes(selectedProduct);chosenProduct.textContent=selectedProduct.name;chosenImage.textContent=selectedImage;chosenCategory.textContent=selectedProduct.cat;}
+products.forEach(p=>{const d=document.createElement('button');d.className='product';d.type='button';d.innerHTML=`<div class='pname'>${p.name}</div><div class='ptag'>${p.cat}</div>`;d.onclick=()=>{selectedProduct=p;paint()};productRoot.appendChild(d)});
+images.forEach(img=>{const d=document.createElement('button');d.className='thumb';d.type='button';d.innerHTML=`<img src='./${img}' alt='${img}'>`;d.onclick=()=>{selectedImage=img;paint()};thumbsRoot.appendChild(d)});
 paint();
-</script>
-</body>
-</html>
+</script></body></html>
