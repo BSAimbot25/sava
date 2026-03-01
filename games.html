@@ -43,9 +43,20 @@
 
 <script>
 const KEY='sava_arcade_v1';
+const CUR_KEY='sava_current_user_v1';
 function db(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch{return {}}}
 function save(v){localStorage.setItem(KEY,JSON.stringify(v));}
-function ensure(){const d=db(); if(!d.player){let n=prompt('Enter your player name for Sava Games leaderboard:','Player'); d.player=(n&&n.trim())?n.trim():'Player'; save(d);} return d;}
+function ensure(){
+  const d=db();
+  const signed=localStorage.getItem(CUR_KEY)||'';
+  if(signed){ d.player=signed; save(d); return d; }
+  if(!d.player){
+    let n=prompt('Enter your player name for Sava Games leaderboard:','Player');
+    d.player=(n&&n.trim())?n.trim():'Player';
+    save(d);
+  }
+  return d;
+}
 function gameLabel(g){return ({tetris:'Tetris',dodge:'Dodge',snake:'Snake',pong:'Pong',clicker:'Clicker',memory:'Memory'})[g]||g}
 async function render(){const d=ensure(); document.getElementById('playerName').textContent=d.player;
   const el=document.getElementById('leader'); el.innerHTML='<li>Loading...</li>';

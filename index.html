@@ -27,7 +27,7 @@
         user-select: none;
         -webkit-user-drag: none;
       }
-      #merch-btn, #blog-btn, #guestbook-btn, #games-btn {
+      #merch-btn, #blog-btn, #guestbook-btn, #games-btn, #account-btn {
         position: fixed;
         z-index: 20;
         writing-mode: vertical-rl;
@@ -77,6 +77,14 @@
         box-shadow: 0 0 24px rgba(255, 78, 246, 0.95);
         animation: blogBlink 0.58s steps(2, end) infinite;
       }
+      #account-btn {
+        right: 10px;
+        top: 37%;
+        transform: rotate(-2deg);
+        background: linear-gradient(180deg, #7cff7c, #0de68a);
+        box-shadow: 0 0 20px rgba(124, 255, 124, 0.9);
+        animation: blink 0.62s steps(2, end) infinite;
+      }
       @keyframes blink {
         0%, 100% { filter: saturate(1.1) brightness(1); }
         50% { filter: saturate(2) brightness(1.4); }
@@ -87,7 +95,7 @@
       }
 
       @media (max-width: 760px) {
-        #merch-btn, #blog-btn, #guestbook-btn, #games-btn {
+        #merch-btn, #blog-btn, #guestbook-btn, #games-btn, #account-btn {
           display: none;
         }
 
@@ -121,6 +129,7 @@
         .mobile-nav .m-merch { background: linear-gradient(180deg, #fff200, #ff7a00); }
         .mobile-nav .m-guest { background: linear-gradient(180deg, #9dff00, #26ff7c); }
         .mobile-nav .m-games { background: linear-gradient(180deg, #ff4ef6, #8a2cff); color: #fff; }
+        .mobile-nav .m-account { background: linear-gradient(180deg, #7cff7c, #0de68a); color: #102d1f; }
       }
 
     </style>
@@ -130,12 +139,14 @@
     <a id="merch-btn" href="./merch.html">MERCH STORE</a>
     <a id="guestbook-btn" href="./guestbook.html">GUESTBOOK</a>
     <a id="games-btn" href="./games.html">SAVA GAMES</a>
+    <a id="account-btn" href="./auth.html">ACCOUNT</a>
 
     <nav class="mobile-nav">
       <a class="m-blog" href="./blog.html">BLOG</a>
       <a class="m-merch" href="./merch.html">MERCH</a>
       <a class="m-guest" href="./guestbook.html">GUESTBOOK</a>
       <a class="m-games" href="./games.html">GAMES</a>
+      <a class="m-account" href="./auth.html">ACCOUNT</a>
     </nav>
     <div id="wrap">
       <img id="photo" src="./1.jpg" alt="silkin image" />

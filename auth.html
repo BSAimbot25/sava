@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sava Account</title>
+  <style>
+    :root{--bg1:#080b1f;--bg2:#12183a;--card:#151c42cc;--line:#ffffff30;--acc:#00ffc8;--warn:#ffe700}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;font-family:Inter,system-ui,Arial;background:radial-gradient(1200px 700px at 15% 10%,#27337a66,transparent),radial-gradient(1000px 600px at 85% 90%,#00ffc833,transparent),linear-gradient(160deg,var(--bg1),var(--bg2));color:#fff;display:grid;place-items:center;padding:16px}
+    .wrap{width:min(980px,100%);display:grid;grid-template-columns:1.05fr .95fr;gap:14px}
+    .hero,.card{background:var(--card);border:1px solid var(--line);border-radius:18px;backdrop-filter: blur(8px)}
+    .hero{padding:18px}
+    h1{margin:0 0 10px;color:var(--warn)}
+    .muted{opacity:.84}
+    .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .chip{padding:6px 10px;border-radius:999px;background:#ffffff1f;font-size:.85rem}
+    .card{padding:16px}
+    .tabs{display:flex;gap:8px;margin-bottom:12px}
+    .tab{border:1px solid var(--line);background:#ffffff14;color:#fff;padding:8px 12px;border-radius:10px;font-weight:800;cursor:pointer}
+    .tab.active{background:var(--acc);color:#07281f}
+    label{display:block;font-size:.9rem;opacity:.9;margin:10px 0 6px}
+    input{width:100%;padding:11px 12px;border-radius:10px;border:1px solid #ffffff3a;background:#0b1130;color:#fff}
+    .btn{margin-top:12px;width:100%;border:0;border-radius:12px;padding:11px 12px;background:linear-gradient(135deg,var(--acc),#6cffdd);color:#073128;font-weight:900;cursor:pointer}
+    .secondary{background:#ffffff18;color:#fff;border:1px solid var(--line)}
+    .row{display:flex;gap:8px}
+    .ok{margin-top:10px;color:#89ffb1;font-weight:700}
+    .err{margin-top:10px;color:#ff8b8b;font-weight:700}
+    .toplink{position:fixed;left:12px;top:12px;background:var(--warn);color:#111;padding:8px 12px;border-radius:999px;font-weight:900;text-decoration:none}
+    @media (max-width:850px){.wrap{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <a class="toplink" href="./index.html">← Home</a>
+  <div class="wrap">
+    <section class="hero">
+      <h1>Sava Account</h1>
+      <p class="muted">Create your account to keep your identity across games and leaderboard submissions.</p>
+      <div class="chips">
+        <span class="chip">Fast signup</span>
+        <span class="chip">No extra app</span>
+        <span class="chip">Personal game records</span>
+      </div>
+      <p class="muted" style="margin-top:14px">Current user: <strong id="currentUser">Guest</strong></p>
+      <button class="btn secondary" id="logoutBtn" type="button">Log out</button>
+    </section>
+
+    <section class="card">
+      <div class="tabs">
+        <button class="tab active" id="signTab" type="button">Sign up</button>
+        <button class="tab" id="loginTab" type="button">Log in</button>
+      </div>
+
+      <form id="signupForm">
+        <label>Username</label>
+        <input id="suName" required minlength="3" maxlength="24" placeholder="e.g. MasterSava" />
+        <label>Password</label>
+        <input id="suPass" type="password" required minlength="4" maxlength="64" placeholder="Create password" />
+        <button class="btn" type="submit">Create account</button>
+      </form>
+
+      <form id="loginForm" style="display:none">
+        <label>Username</label>
+        <input id="liName" required placeholder="Your username" />
+        <label>Password</label>
+        <input id="liPass" type="password" required placeholder="Your password" />
+        <button class="btn" type="submit">Log in</button>
+      </form>
+
+      <div id="msg"></div>
+    </section>
+  </div>
+
+<script>
+const USERS_KEY='sava_users_v1';
+const CUR_KEY='sava_current_user_v1';
+const msg=document.getElementById('msg');
+const currentUser=document.getElementById('currentUser');
+const signupForm=document.getElementById('signupForm');
+const loginForm=document.getElementById('loginForm');
+const signTab=document.getElementById('signTab');
+const loginTab=document.getElementById('loginTab');
+function users(){try{return JSON.parse(localStorage.getItem(USERS_KEY)||'{}')}catch{return {}}}
+function saveUsers(u){localStorage.setItem(USERS_KEY,JSON.stringify(u));}
+function setCurrent(name){localStorage.setItem(CUR_KEY,name);currentUser.textContent=name||'Guest';}
+function getCurrent(){return localStorage.getItem(CUR_KEY)||''}
+function hash(p){let h=2166136261;for(let i=0;i<p.length;i++){h^=p.charCodeAt(i);h=Math.imul(h,16777619)}return (h>>>0).toString(16)}
+function ok(t){msg.className='ok';msg.textContent=t}
+function err(t){msg.className='err';msg.textContent=t}
+
+function showSignup(){signupForm.style.display='block';loginForm.style.display='none';signTab.classList.add('active');loginTab.classList.remove('active');msg.textContent='';}
+function showLogin(){signupForm.style.display='none';loginForm.style.display='block';loginTab.classList.add('active');signTab.classList.remove('active');msg.textContent='';}
+signTab.onclick=showSignup; loginTab.onclick=showLogin;
+
+signupForm.onsubmit=(e)=>{e.preventDefault();const n=suName.value.trim();const p=suPass.value;if(!/^[a-zA-Z0-9_\-.]{3,24}$/.test(n))return err('Username: 3-24 chars, letters/numbers/_-. only');const u=users();if(u[n])return err('Username already exists');u[n]={pass:hash(p),created:Date.now()};saveUsers(u);setCurrent(n);ok('Account created. You are logged in.');}
+loginForm.onsubmit=(e)=>{e.preventDefault();const n=liName.value.trim();const p=liPass.value;const u=users();if(!u[n]||u[n].pass!==hash(p))return err('Invalid username or password');setCurrent(n);ok('Logged in successfully.');}
+logoutBtn.onclick=()=>{localStorage.removeItem(CUR_KEY);setCurrent('');ok('Logged out.');}
+setCurrent(getCurrent());
+</script>
+<script type="module">import { inject } from "https://esm.sh/@vercel/analytics"; inject();</script>
+</body>
+</html>
