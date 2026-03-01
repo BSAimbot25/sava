@@ -3,94 +3,119 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sava Next Demo</title>
+  <title>Sava Mega Demo</title>
   <style>
-    :root{--bg:#070b1b;--bg2:#0f1738;--card:#131d45;--line:#ffffff2a;--txt:#fff;--muted:#b7c5ff;--acc:#00ffc8;--warn:#ffe700}
-    *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui;background:radial-gradient(1200px 600px at 10% -10%,#3148b566,transparent),radial-gradient(1000px 700px at 100% 0,#00ffc833,transparent),linear-gradient(165deg,var(--bg),var(--bg2));color:var(--txt)}
-    .wrap{width:min(1220px,calc(100% - 22px));margin:0 auto}
-    .top{position:sticky;top:0;z-index:10;backdrop-filter:blur(8px);background:#090f25cc;border-bottom:1px solid #ffffff18}
-    .nav{display:flex;align-items:center;justify-content:space-between;padding:10px 0}.brand{font-weight:900;color:var(--warn);letter-spacing:.6px}
-    .actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid var(--line);background:#ffffff10;color:#fff;text-decoration:none;padding:8px 12px;border-radius:999px;font-weight:800}.btn.acc{background:linear-gradient(135deg,var(--acc),#6cffdd);color:#062d24;border:0}
-    .hero{display:grid;grid-template-columns:1.08fr .92fr;gap:14px;padding:18px 0}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
-    h1{margin:.2rem 0 .4rem;color:var(--warn);font-size:clamp(1.5rem,4vw,2.4rem)}
-    .muted{color:var(--muted)}
-    .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:10px}.kpi{background:#0f183b;border:1px solid #ffffff20;border-radius:12px;padding:10px;text-align:center}
-    .kpi b{display:block;font-size:1.2rem;color:var(--acc)}
-    .section{margin:14px 0}.title{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
-    .tile{background:#101a3f;border:1px solid #ffffff20;border-radius:14px;padding:12px;display:grid;gap:8px}
-    .tile h3{margin:0}.mini{font-size:.9rem;color:var(--muted)}
-    .go{display:inline-block;background:var(--acc);color:#062d24;text-decoration:none;padding:8px 10px;border-radius:10px;font-weight:900}
-    .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .list{margin:8px 0 0 18px;padding:0}.list li{margin:5px 0}
-    .footer{margin:20px 0 30px;text-align:center;color:var(--muted)}
-    @media(max-width:920px){.hero,.two{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    html,body{margin:0;width:100%;height:100%;background:#000;color:#fff;font-family:system-ui;overflow:hidden}
+    #wrap{width:100%;height:100%;display:grid;place-items:center;cursor:pointer;position:relative}
+    #photo{max-width:100vw;max-height:100vh;object-fit:contain;user-select:none;-webkit-user-drag:none;filter:saturate(1.08) contrast(1.03)}
+
+    /* Keep original structure buttons */
+    #merch-btn,#blog-btn,#guestbook-btn,#games-btn,#account-btn,#demo-btn{position:fixed;z-index:30;writing-mode:vertical-rl;text-orientation:mixed;text-decoration:none;font-family:"Arial Black",Impact,sans-serif;letter-spacing:.06em;font-size:14px;color:#111;border:2px solid #fff;border-radius:14px;padding:14px 10px}
+    #merch-btn{right:6px;top:62%;transform:rotate(-3deg);background:linear-gradient(180deg,#fff200,#ff7a00);box-shadow:0 0 18px rgba(255,238,0,.95);animation:blink .65s steps(2,end) infinite}
+    #blog-btn{right:10px;top:11%;transform:rotate(2deg);background:linear-gradient(180deg,#00ffef,#00a6ff);box-shadow:0 0 24px rgba(0,255,239,.98),0 0 36px rgba(0,166,255,.85);animation:blogBlink .5s steps(2,end) infinite}
+    #guestbook-btn{left:6px;top:31%;transform:rotate(-1deg);background:linear-gradient(180deg,#9dff00,#26ff7c);box-shadow:0 0 22px rgba(157,255,0,.95);animation:blink .7s steps(2,end) infinite}
+    #games-btn{left:10px;top:70%;transform:rotate(3deg);background:linear-gradient(180deg,#ff4ef6,#8a2cff);box-shadow:0 0 24px rgba(255,78,246,.95);animation:blogBlink .58s steps(2,end) infinite}
+    #account-btn{right:10px;top:37%;transform:rotate(-2deg);background:linear-gradient(180deg,#7cff7c,#0de68a);box-shadow:0 0 20px rgba(124,255,124,.9);animation:blink .62s steps(2,end) infinite}
+    #demo-btn{left:10px;top:10%;transform:rotate(-2deg);background:linear-gradient(180deg,#ffd7f9,#ff6adf);box-shadow:0 0 20px rgba(255,106,223,.88)}
+
+    @keyframes blink{0%,100%{filter:saturate(1.1) brightness(1)}50%{filter:saturate(2) brightness(1.4)}}
+    @keyframes blogBlink{0%,100%{filter:saturate(1.2) brightness(1)}50%{filter:saturate(2.2) brightness(1.65)}}
+
+    /* Massive overlays / improvements */
+    .hud{position:fixed;z-index:25;left:50%;top:10px;transform:translateX(-50%);display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+    .pill{background:#0c1230cc;border:1px solid #ffffff2f;border-radius:999px;padding:7px 11px;font-weight:800;backdrop-filter:blur(8px)}
+    .dock{position:fixed;z-index:28;left:50%;bottom:10px;transform:translateX(-50%);display:flex;gap:8px;flex-wrap:wrap;justify-content:center;background:#090f25cc;border:1px solid #ffffff24;border-radius:14px;padding:8px 10px;backdrop-filter:blur(8px)}
+    .dock a,.dock button{border:1px solid #ffffff2e;background:#ffffff0f;color:#fff;border-radius:10px;padding:8px 10px;font-weight:800;text-decoration:none;cursor:pointer}
+    .panel{position:fixed;z-index:26;top:66px;right:14px;width:min(330px,45vw);max-height:56vh;overflow:auto;background:#0b1433d9;border:1px solid #ffffff28;border-radius:14px;padding:12px;backdrop-filter:blur(8px)}
+    .panel h3{margin:0 0 8px;color:#ffe700}.panel ul{margin:0 0 0 18px;padding:0}.panel li{margin:5px 0;color:#dbe4ff}
+    .leftPanel{left:14px;right:auto;width:min(330px,45vw)}
+
+    .mobile-nav{display:none}
+    @media(max-width:760px){
+      #merch-btn,#blog-btn,#guestbook-btn,#games-btn,#account-btn,#demo-btn,.panel{display:none}
+      .mobile-nav{position:fixed;left:50%;bottom:8px;transform:translateX(-50%);z-index:30;display:flex;gap:6px;width:calc(100% - 12px);max-width:620px;justify-content:center;flex-wrap:wrap}
+      .mobile-nav a{text-decoration:none;border:2px solid #fff;border-radius:12px;padding:8px 10px;font-family:"Arial Black",Impact,sans-serif;font-size:11px;letter-spacing:.03em;color:#111;box-shadow:0 0 14px rgba(255,255,255,.35)}
+      .m-blog{background:linear-gradient(180deg,#00ffef,#00a6ff)}.m-merch{background:linear-gradient(180deg,#fff200,#ff7a00)}.m-guest{background:linear-gradient(180deg,#9dff00,#26ff7c)}.m-games{background:linear-gradient(180deg,#ff4ef6,#8a2cff);color:#fff}.m-account{background:linear-gradient(180deg,#7cff7c,#0de68a)}.m-demo{background:linear-gradient(180deg,#ffd7f9,#ff6adf)}
+      .hud{top:6px}.pill{font-size:12px;padding:6px 8px}.dock{display:none}
+    }
   </style>
 </head>
 <body>
-  <header class="top"><div class="wrap nav"><div class="brand">SAVELY SILKIN — NEXT DEMO</div><div class="actions"><a class="btn" href="./index.html">Current Site</a><a class="btn" href="./games.html">Games</a><a class="btn" href="./merch.html">Merch</a><a class="btn" href="./account.html">Account</a><a class="btn acc" href="./snus-clicker.html">Play Snus Clicker</a></div></div></header>
+  <a id="blog-btn" href="./blog.html">SAVAS BLOG</a>
+  <a id="merch-btn" href="./merch.html">MERCH STORE</a>
+  <a id="guestbook-btn" href="./guestbook.html">GUESTBOOK</a>
+  <a id="games-btn" href="./games.html">SAVA GAMES</a>
+  <a id="account-btn" href="./account.html">ACCOUNT</a>
+  <a id="demo-btn" href="./demo-next.html">MEGA DEMO</a>
 
-  <main class="wrap">
-    <section class="hero">
-      <article class="card">
-        <h1>One page. Best version direction.</h1>
-        <p class="muted">This demo combines what works now (games, merch, accounts) into one polished experience with clearer flow and higher conversion.</p>
-        <div class="kpis">
-          <div class="kpi"><b>8</b>Games Live</div>
-          <div class="kpi"><b>18+</b>Merch Items</div>
-          <div class="kpi"><b>Global</b>Leaderboard</div>
-          <div class="kpi"><b>Cloud</b>Account Sync</div>
-        </div>
-      </article>
-      <article class="card">
-        <h3 style="margin-top:0">Best-priority upgrades roadmap</h3>
-        <ol class="list">
-          <li>Home should show live top players + CTA to Snus Clicker</li>
-          <li>Account card + recent scores directly on home</li>
-          <li>Merch split by Clothing / Accessories + featured cheap picks</li>
-          <li>Game difficulty toggles + mobile haptics style feedback</li>
-          <li>Packs/economy launch with visible progress bar</li>
-        </ol>
-      </article>
-    </section>
+  <nav class="mobile-nav">
+    <a class="m-blog" href="./blog.html">BLOG</a>
+    <a class="m-merch" href="./merch.html">MERCH</a>
+    <a class="m-guest" href="./guestbook.html">GUESTBOOK</a>
+    <a class="m-games" href="./games.html">GAMES</a>
+    <a class="m-account" href="./account.html">ACCOUNT</a>
+    <a class="m-demo" href="./demo-next.html">DEMO</a>
+  </nav>
 
-    <section class="section">
-      <div class="title"><h2 style="margin:0">Featured Experiences</h2><span class="mini">Built around engagement + retention</span></div>
-      <div class="grid">
-        <article class="tile"><h3>Snus Clicker 3.0</h3><p class="mini">Tap lab, active frenzy, upgrades, autosave, cloud score.</p><a class="go" href="./snus-clicker.html">Open</a></article>
-        <article class="tile"><h3>Space Sava Dodge</h3><p class="mini">Better controls, pause/restart, can obstacle after 1000 score.</p><a class="go" href="./space-dodge.html">Open</a></article>
-        <article class="tile"><h3>Sava Tetris Turbo</h3><p class="mini">Faster loop, image blocks, mobile hold controls, pause.</p><a class="go" href="./tetris.html">Open</a></article>
-        <article class="tile"><h3>Merch Shop</h3><p class="mini">Cheap pricing strategy, accessory expansion, live Printify links.</p><a class="go" href="./merch.html">Open</a></article>
-      </div>
-    </section>
+  <div class="hud">
+    <div class="pill">🎮 8 Games</div>
+    <div class="pill">🧾 Cloud Accounts</div>
+    <div class="pill">🏆 Global Leaderboards</div>
+    <div class="pill">🛍️ Merch + Accessories</div>
+  </div>
 
-    <section class="section two">
-      <article class="card">
-        <h3 style="margin-top:0">Account + Social</h3>
-        <ul class="list">
-          <li>Cloud login and profile sync</li>
-          <li>Public profile pages</li>
-          <li>Follow/unfollow counters</li>
-          <li>Wall comments</li>
-          <li>Top score visibility per user</li>
-        </ul>
-        <a class="go" href="./account.html">Open Account Hub</a>
-      </article>
-      <article class="card">
-        <h3 style="margin-top:0">Monetization-ready layout</h3>
-        <ul class="list">
-          <li>Push users from game to merch/pack CTA</li>
-          <li>Show limited-time featured drop cards</li>
-          <li>Add social proof: latest buyers / top grinders</li>
-          <li>Add profile cosmetics tied to future packs</li>
-        </ul>
-        <a class="go" href="./customizer-demo.html">Open Customizer Demo</a>
-      </article>
-    </section>
+  <aside class="panel leftPanel">
+    <h3>Best Improvements Pack</h3>
+    <ul>
+      <li>Homepage structure kept + massively enhanced overlays</li>
+      <li>Quick-jump dock to key experiences</li>
+      <li>Roadmap cards always visible on desktop</li>
+      <li>Keeps your iconic image-cycle style</li>
+      <li>Ready for packs/trading section slot-in</li>
+    </ul>
+  </aside>
 
-    <p class="footer">Demo page crafted for your “best possible version” direction, Master.</p>
-  </main>
-<script type="module">import { inject } from "https://esm.sh/@vercel/analytics"; inject();</script>
+  <aside class="panel">
+    <h3>Live Demo Routes</h3>
+    <ul>
+      <li><a href="./snus-clicker.html" style="color:#9fe7ff">Snus Clicker</a></li>
+      <li><a href="./space-dodge.html" style="color:#9fe7ff">Space Sava Dodge</a></li>
+      <li><a href="./customizer-demo.html" style="color:#9fe7ff">Customizer Demo</a></li>
+      <li><a href="./profile.html?u=PapaSava" style="color:#9fe7ff">Public Profile</a></li>
+    </ul>
+  </aside>
+
+  <div class="dock">
+    <a href="./snus-clicker.html">Play Snus Clicker</a>
+    <a href="./merch.html">Open Merch</a>
+    <a href="./games.html">Arcade Hub</a>
+    <a href="./account.html">My Account</a>
+    <button id="toggleAudio">Toggle Music</button>
+  </div>
+
+  <div id="wrap"><img id="photo" src="./1.jpg" alt="silkin image" /></div>
+
+  <audio id="bg-audio" loop preload="auto" playsinline webkit-playsinline>
+    <source src="./song.m4a" type="audio/mp4" />
+  </audio>
+
+  <script>
+    const images=['./1.jpg','./2.jpg','./3.jpg','./4.jpg','./5.jpg','./6.jpg','./7.jpg','./8.jpg','./9.jpg','./10.jpg','./11.jpg','./12.jpg'];
+    let current=0,pool=[];const photo=document.getElementById('photo');const wrap=document.getElementById('wrap');const bgAudio=document.getElementById('bg-audio');
+    images.forEach(src=>{const img=new Image();img.src=src;});
+    function refillPool(){pool=images.map((_,i)=>i).filter(i=>i!==current)}
+    function next(){if(pool.length===0)refillPool();const pick=(Math.random()*pool.length)|0;current=pool.splice(pick,1)[0];photo.src=images[current]}
+
+    let audioUnlocked=false;function tryPlayAudio(){bgAudio.loop=true;bgAudio.muted=false;bgAudio.volume=1;bgAudio.play().then(()=>audioUnlocked=true).catch(()=>{})}
+    ['touchstart','pointerdown','click','keydown'].forEach(ev=>window.addEventListener(ev,tryPlayAudio,{passive:true}));
+    document.addEventListener('visibilitychange',()=>{if(audioUnlocked&&!document.hidden)tryPlayAudio()});
+    wrap.addEventListener('pointerup',next,{passive:true});
+    window.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '||e.key==='Enter')next()});
+    setInterval(()=>{if(audioUnlocked&&!document.hidden&&bgAudio.paused)tryPlayAudio()},1200);
+
+    const t=document.getElementById('toggleAudio');
+    t.onclick=()=>{ if(bgAudio.paused) tryPlayAudio(); else bgAudio.pause(); };
+  </script>
+  <script type="module">import { inject } from "https://esm.sh/@vercel/analytics"; inject();</script>
 </body>
 </html>
