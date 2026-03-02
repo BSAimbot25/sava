@@ -19,6 +19,10 @@ const schema = i.schema({
 
 const db = init({ appId: APP_ID, schema });
 
+function localVaultKey(owner, scope){ return `sava_vault_${String(owner||'').toLowerCase()}_${scope}`; }
+function vaultWrite(owner, scope, obj){ try{ localStorage.setItem(localVaultKey(owner,scope), JSON.stringify({t:Date.now(), data:obj||{}})); }catch{} }
+function vaultRead(owner, scope){ try{ const raw=localStorage.getItem(localVaultKey(owner,scope)); if(!raw) return null; const j=JSON.parse(raw); return j?.data ?? null; }catch{return null;} }
+
 function queryOnce(q, timeoutMs = 5000) {
   return new Promise((resolve, reject) => {
     let done = false;
@@ -180,23 +184,37 @@ const api = {
 
   async saveProgress(scope, dataObj){
     const owner = localStorage.getItem('sava_current_user_v1') || localStorage.getItem('sava_last_user_v1') || 'Player';
-    const d = await queryOnce({ progress:{} });
-    const row = (d?.progress||[]).find(p=>String(p.owner||'').toLowerCase()===owner.toLowerCase() && p.scope===scope);
-    const payload = JSON.stringify(dataObj||{});
-    if(row){
-      await db.transact(db.tx.progress[row.id].update({ data: payload, updatedAt: Date.now() }));
-    }else{
-      await db.transact(db.tx.progress[id()].update({ owner, scope, data: payload, updatedAt: Date.now() }));
+    // always keep local durable vault copy first
+    vaultWrite(owner, scope, dataObj||{});
+    try{
+      const d = await queryOnce({ progress:{} });
+      const row = (d?.progress||[]).find(p=>String(p.owner||'').toLowerCase()===owner.toLowerCase() && p.scope===scope);
+      const payload = JSON.stringify(dataObj||{});
+      if(row){
+        await db.transact(db.tx.progress[row.id].update({ data: payload, updatedAt: Date.now() }));
+      }else{
+        await db.transact(db.tx.progress[id()].update({ owner, scope, data: payload, updatedAt: Date.now() }));
+      }
+      return true;
+    }catch{
+      return true; // local vault already saved
     }
-    return true;
   },
 
   async loadProgress(scope){
     const owner = localStorage.getItem('sava_current_user_v1') || localStorage.getItem('sava_last_user_v1') || 'Player';
-    const d = await queryOnce({ progress:{} });
-    const row = (d?.progress||[]).find(p=>String(p.owner||'').toLowerCase()===owner.toLowerCase() && p.scope===scope);
-    if(!row?.data) return null;
-    try{return JSON.parse(row.data);}catch{return null;}
+    try{
+      const d = await queryOnce({ progress:{} });
+      const row = (d?.progress||[]).find(p=>String(p.owner||'').toLowerCase()===owner.toLowerCase() && p.scope===scope);
+      if(row?.data){
+        const cloudData = JSON.parse(row.data);
+        // refresh local vault copy when cloud succeeds
+        vaultWrite(owner, scope, cloudData);
+        return cloudData;
+      }
+    }catch{}
+    // cloud unavailable -> fallback to local durable vault
+    return vaultRead(owner, scope);
   },
 
   async sendMessage(to, text){
