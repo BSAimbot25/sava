@@ -100,6 +100,13 @@ const api = {
     rows.sort((a,b)=>Number(b.score||0)-Number(a.score||0)); return rows;
   },
 
+  async fetchGameScores(game){
+    const data = await queryOnce({ scores: {} });
+    const rows = (data?.scores || []).filter(r => String(r.game||'')===String(game||''));
+    rows.sort((a,b)=>Number(b.score||0)-Number(a.score||0));
+    return rows;
+  },
+
   async fetchUserProfile(username){ return findUserByName(String(username||'').trim()); },
 
   async follow(target){
