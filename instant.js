@@ -88,9 +88,23 @@ const api = {
   },
 
   async fetchBoards(games = ['tetris','dodge','snake','pong','clicker','memory','snus']) {
-    const data = await queryOnce({ scores: {} }); const rows = data?.scores || []; const out = {}; for (const g of games) out[g] = [];
-    for (const r of rows) { if (!out[r.game]) out[r.game] = []; out[r.game].push({ name:r.name, score:Number(r.score||0), game:r.game }); }
-    for (const g of Object.keys(out)) { out[g].sort((a,b)=>b.score-a.score); out[g]=out[g].slice(0,20); }
+    const data = await queryOnce({ scores: {} });
+    const rows = data?.scores || [];
+    const out = {};
+    for (const g of games) out[g] = [];
+
+    for (const g of games) {
+      const byName = new Map();
+      for (const r of rows) {
+        if (String(r.game||'') !== g) continue;
+        const name = String(r.name || 'Player');
+        const key = name.toLowerCase();
+        const sc = Number(r.score || 0);
+        const prev = byName.get(key);
+        if (!prev || sc > prev.score) byName.set(key, { name, score: sc, game: g });
+      }
+      out[g] = Array.from(byName.values()).sort((a,b)=>b.score-a.score).slice(0,20);
+    }
     return out;
   },
 
@@ -103,8 +117,15 @@ const api = {
   async fetchGameScores(game){
     const data = await queryOnce({ scores: {} });
     const rows = (data?.scores || []).filter(r => String(r.game||'')===String(game||''));
-    rows.sort((a,b)=>Number(b.score||0)-Number(a.score||0));
-    return rows;
+    const byName = new Map();
+    for (const r of rows) {
+      const name = String(r.name || 'Player');
+      const key = name.toLowerCase();
+      const sc = Number(r.score || 0);
+      const prev = byName.get(key);
+      if (!prev || sc > prev.score) byName.set(key, { name, score: sc, game: String(game||'') });
+    }
+    return Array.from(byName.values()).sort((a,b)=>b.score-a.score);
   },
 
   async fetchUserProfile(username){ return findUserByName(String(username||'').trim()); },
