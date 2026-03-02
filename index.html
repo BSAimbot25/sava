@@ -27,7 +27,7 @@
         user-select: none;
         -webkit-user-drag: none;
       }
-      #merch-btn, #blog-btn, #guestbook-btn, #games-btn, #account-btn {
+      #merch-btn, #blog-btn, #guestbook-btn, #games-btn, #account-btn, #suggest-btn {
         position: fixed;
         z-index: 20;
         writing-mode: vertical-rl;
@@ -85,6 +85,14 @@
         box-shadow: 0 0 20px rgba(124, 255, 124, 0.9);
         animation: blink 0.62s steps(2, end) infinite;
       }
+      #suggest-btn {
+        left: 10px;
+        top: 10%;
+        transform: rotate(2deg);
+        background: linear-gradient(180deg, #ffd86b, #ff9f1a);
+        box-shadow: 0 0 20px rgba(255, 170, 44, 0.9);
+        animation: blogBlink 0.55s steps(2, end) infinite;
+      }
       @keyframes blink {
         0%, 100% { filter: saturate(1.1) brightness(1); }
         50% { filter: saturate(2) brightness(1.4); }
@@ -95,7 +103,7 @@
       }
 
       @media (max-width: 760px) {
-        #merch-btn, #blog-btn, #guestbook-btn, #games-btn, #account-btn {
+        #merch-btn, #blog-btn, #guestbook-btn, #games-btn, #account-btn, #suggest-btn {
           display: none;
         }
 
@@ -130,6 +138,7 @@
         .mobile-nav .m-guest { background: linear-gradient(180deg, #9dff00, #26ff7c); }
         .mobile-nav .m-games { background: linear-gradient(180deg, #ff4ef6, #8a2cff); color: #fff; }
         .mobile-nav .m-account { background: linear-gradient(180deg, #7cff7c, #0de68a); color: #102d1f; }
+        .mobile-nav .m-suggest { background: linear-gradient(180deg, #ffd86b, #ff9f1a); color: #3a2400; }
       }
 
     </style>
@@ -140,6 +149,7 @@
     <a id="guestbook-btn" href="./guestbook.html">GUESTBOOK</a>
     <a id="games-btn" href="./games.html">SAVA GAMES</a>
     <a id="account-btn" href="./account.html">ACCOUNT</a>
+    <a id="suggest-btn" href="./suggestions.html">SUGGESTIONS</a>
 
     <nav class="mobile-nav">
       <a class="m-blog" href="./blog.html">BLOG</a>
@@ -147,6 +157,7 @@
       <a class="m-guest" href="./guestbook.html">GUESTBOOK</a>
       <a class="m-games" href="./games.html">GAMES</a>
       <a class="m-account" href="./account.html">ACCOUNT</a>
+      <a class="m-suggest" href="./suggestions.html">SUGGEST</a>
     </nav>
     <div id="wrap">
       <img id="photo" src="./13.jpg" alt="silkin image" />
