@@ -77,10 +77,12 @@ function scores(){try{return JSON.parse(localStorage.getItem(SCORE_KEY)||'{}')}c
 const current=localStorage.getItem(CUR_KEY)||'';
 if(!current){ location.href='./auth.html'; }
 
+async function getSync(){ if(sync) return sync; try{ await import('./instant.js'); }catch{} return sync||null; }
 async function loadAccount(){
+  const sync=await getSync();
   let user=null;
-  if(window.InstantSync){
-    try{ user = await window.InstantSync.getCurrentUser(); }catch{}
+  if(sync){
+    try{ user = await sync.getCurrentUser(); }catch{}
   }
   if(!user){
     const u=users();
@@ -107,22 +109,22 @@ async function loadAccount(){
 
   saveProfile.onclick=async ()=>{
     const patch={displayName:displayName.value.trim()||current,avatarUrl:avatarUrl.value.trim(),statusText:statusText.value.trim(),bio:bio.value,favGame:favGame.value,notes:notes.value};
-    if(window.InstantSync){ try{ await window.InstantSync.saveProfile(current,patch);}catch{} }
+    if(sync){ try{ await sync.saveProfile(current,patch);}catch{} }
     const all=users(); all[current]=all[current]||{}; Object.assign(all[current],patch,{role:(current==='PapaSava')?'Master Sava':'Silkin Slave'}); saveUsers(all);
     alert('Profile saved');
   };
 
   saveNotes.onclick=async ()=>{
-    if(window.InstantSync){ try{ await window.InstantSync.saveProfile(current,{notes:notes.value}); }catch{} }
+    if(sync){ try{ await sync.saveProfile(current,{notes:notes.value}); }catch{} }
     const all=users(); all[current]=all[current]||{}; all[current].notes=notes.value; saveUsers(all);
     alert('Notes saved');
   };
 
   logout.onclick=()=>{localStorage.removeItem(CUR_KEY);location.href='./auth.html';};
 
-  if(window.InstantSync){
+  if(sync){
     try{
-      const mine=await window.InstantSync.fetchUserScores(current);
+      const mine=await sync.fetchUserScores(current);
       const best = mine.reduce((m,r)=>Math.max(m,Number(r.score||0)),0);
       bestScore.textContent = Math.floor(best).toLocaleString();
       records.innerHTML=mine.length?mine.slice(0,20).map(r=>`<li><strong>${r.game}</strong>: ${Math.floor(r.score)}</li>`).join(''):'<li>No records yet</li>';
@@ -143,3 +145,4 @@ loadAccount();
 <script type="module">import { inject } from "https://esm.sh/@vercel/analytics"; inject();</script>
 </body>
 </html>
+
