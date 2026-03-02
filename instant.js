@@ -92,12 +92,14 @@ const api = {
     const data = await queryOnce({ scores: {} });
     const rows = data?.scores || [];
     const out = {};
+    const SNUS_RESET_AT = 1772469840000; // 2026-03-02 reset window
     for (const g of games) out[g] = [];
 
     for (const g of games) {
       const byName = new Map();
       for (const r of rows) {
         if (String(r.game||'') !== g) continue;
+        if (g==='snus' && Number(r.createdAt||0) < SNUS_RESET_AT) continue;
         const name = String(r.name || 'Player');
         const key = name.toLowerCase();
         const sc = Number(r.score || 0);
@@ -117,7 +119,8 @@ const api = {
 
   async fetchGameScores(game){
     const data = await queryOnce({ scores: {} });
-    const rows = (data?.scores || []).filter(r => String(r.game||'')===String(game||''));
+    const SNUS_RESET_AT = 1772469840000;
+    const rows = (data?.scores || []).filter(r => String(r.game||'')===String(game||'')).filter(r => !(String(game||'')==='snus' && Number(r.createdAt||0) < SNUS_RESET_AT));
     const byName = new Map();
     for (const r of rows) {
       const name = String(r.name || 'Player');

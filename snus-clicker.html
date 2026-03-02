@@ -95,7 +95,7 @@
 <script type="module" src="./instant.js"></script>
 <script>
 document.addEventListener('dblclick',e=>e.preventDefault(),{passive:false});
-const KEY='sava_snus_clicker_max_v4';
+const KEY='sava_snus_clicker_s2_v1';
 const me=()=>localStorage.getItem('sava_current_user_v1')||localStorage.getItem('sava_last_user_v1')||'Player';
 const fmt=n=>n<1e3?Math.floor(n).toLocaleString():n<1e6?(n/1e3).toFixed(1)+'K':n<1e9?(n/1e6).toFixed(1)+'M':n<1e12?(n/1e9).toFixed(1)+'B':(n/1e12).toFixed(1)+'T';
 
@@ -124,7 +124,7 @@ function comboMult(){let m=1+Math.min(2.8,s.combo*0.02);for(const u of upgrades)
 function pps(){let p=0;for(const [k,,,v] of buildings)p+=(s.owned[k]||0)*v;return p*cpsMult()*frenzyMul()*(s.cheatBoost||1);}
 function clickVal(){return (s.click*comboMult()*frenzyMul()*(s.cheatBoost||1));}
 
-async function save(cloud=true){s.last=Date.now();localStorage.setItem(KEY,JSON.stringify(s));if(cloud){const sync=window.InstantSync||await import('./instant.js').then(()=>window.InstantSync).catch(()=>null);if(sync)sync.saveProgress('snus-clicker',s).catch(()=>{});}}
+async function save(cloud=true){s.last=Date.now();localStorage.setItem(KEY,JSON.stringify(s));if(cloud){const sync=window.InstantSync||await import('./instant.js').then(()=>window.InstantSync).catch(()=>null);if(sync)sync.saveProgress('snus-clicker-s2',s).catch(()=>{});}}
 function load(){try{const j=JSON.parse(localStorage.getItem(KEY)||'null');if(j)s={...s,...j};}catch{}}
 function puff(v,x,y){const e=document.createElement('div');e.className='float';e.textContent='+'+fmt(v);e.style.left=x+'px';e.style.top=y+'px';play.appendChild(e);setTimeout(()=>e.remove(),730)}
 function paintBtn(btn,ok){btn.className='b '+(ok?'buy-ok':'buy-no');btn.disabled=!ok;}
@@ -155,7 +155,7 @@ function newsTick(){
 async function boot(){
   load();
   const sync=window.InstantSync||await import('./instant.js').then(()=>window.InstantSync).catch(()=>null);
-  if(sync){try{const st=await sync.cloudStatus();cloud.textContent=st.text;const remote=await sync.loadProgress('snus-clicker');if(remote&&Number(remote.snus||0)>Number(s.snus||0))s={...s,...remote};}catch{cloud.textContent='Offline';}} else cloud.textContent='Local';
+  if(sync){try{const st=await sync.cloudStatus();cloud.textContent=st.text;const remote=await sync.loadProgress('snus-clicker-s2');if(remote&&Number(remote.snus||0)>Number(s.snus||0))s={...s,...remote};}catch{cloud.textContent='Offline';}} else cloud.textContent='Local';
   const off=Math.max(0,Math.min(43200,(Date.now()-(s.last||Date.now()))/1000));s.snus+=pps()*off;
   dailyReward();render();
   requestAnimationFrame(loop);
