@@ -75,10 +75,14 @@ const USERS_KEY='sava_users_v1', CUR_KEY='sava_current_user_v1', SCORE_KEY='sava
 function users(){try{return JSON.parse(localStorage.getItem(USERS_KEY)||'{}')}catch{return {}}}
 function saveUsers(u){localStorage.setItem(USERS_KEY,JSON.stringify(u));}
 function scores(){try{return JSON.parse(localStorage.getItem(SCORE_KEY)||'{}')}catch{return {}}}
-const current=localStorage.getItem(CUR_KEY)||'';
+const current=(localStorage.getItem(CUR_KEY)||localStorage.getItem('sava_last_user_v1')||'').trim();
 if(!current){ location.href='./auth.html'; }
 
-async function getSync(){ if(sync) return sync; try{ await import('./instant.js'); }catch{} return sync||null; }
+async function getSync(){
+  if(window.InstantSync) return window.InstantSync;
+  try{ await import('./instant.js'); }catch{}
+  return window.InstantSync||null;
+}
 async function loadAccount(){
   const sync=await getSync();
   let user=null;
@@ -122,6 +126,8 @@ async function loadAccount(){
   };
 
   logout.onclick=()=>{localStorage.removeItem(CUR_KEY);location.href='./auth.html';};
+  // keep current key warm to avoid mobile/session bounce
+  localStorage.setItem(CUR_KEY,current);
 
   if(sync){
     try{
