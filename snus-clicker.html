@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
-  <title>Snus Clicker MAX</title>
+  <title>Snus Clicker</title>
   <style>
     html,body{margin:0;background:#0a0f1f;color:#fff;font-family:system-ui;touch-action:manipulation}
     *{user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
@@ -41,7 +41,7 @@
       <div class="pill">Prestige: <b id="pp">0</b></div>
       <div class="pill">Cloud: <b id="cloud">...</b></div>
     </div>
-    <div><button class="btn" id="save">Save</button> <button class="btn" id="reset">Reset</button></div>
+    <div><button class="btn" id="save">Save</button> <button class="btn" id="reset">Reset</button> <button class="btn" id="codeBtn">Code</button></div>
   </div>
 
   <div class="grid">
@@ -50,7 +50,7 @@
       <button id="goldCan" class="gold">GOLD CAN!</button>
       <div style="position:absolute;left:12px;bottom:12px;right:12px">
         <div class="bar"><div class="fill" id="cmb"></div></div>
-        <div class="muted" id="news">Welcome to Snus Clicker MAX.</div>
+        <div class="muted" id="news">Welcome to Snus Clicker.</div>
       </div>
     </section>
 
@@ -113,7 +113,7 @@ const upgrades=[
  {k:'comboII',n:'Combo Booster II (+35%)',base:900000,type:'combo',mult:1.35,req:0}
 ];
 
-let s={snus:0,click:1,owned:{},upg:{},combo:0,last:Date.now(),prestige:0,lastDaily:0,frenzyUntil:0,frenzyCd:0,lifetime:0,clicks:0,bestCps:0};
+let s={snus:0,click:1,owned:{},upg:{},combo:0,last:Date.now(),prestige:0,lastDaily:0,frenzyUntil:0,frenzyCd:0,lifetime:0,clicks:0,bestCps:0,cheatBoost:1};
 let buy='1',last=0,saveT=0,scoreT=0,newsT=0;
 const cst=(b,n)=>Math.floor(b*Math.pow(1.15,n||0));
 const sumCost=(b,n,q)=>{let t=0;for(let i=0;i<q;i++)t+=cst(b,(n||0)+i);return t};
@@ -121,8 +121,8 @@ function maxAffordable(base,owned,money){let n=0,c=0;while(true){const nx=cst(ba
 const frenzyMul=()=>Date.now()<s.frenzyUntil?3:1;
 function cpsMult(){let m=1+s.prestige*0.1;for(const u of upgrades){if(s.upg[u.k]&&u.type==='cps')m*=u.mult;}return m;}
 function comboMult(){let m=1+Math.min(2.8,s.combo*0.02);for(const u of upgrades){if(s.upg[u.k]&&u.type==='combo')m*=u.mult;}return m;}
-function pps(){let p=0;for(const [k,,,v] of buildings)p+=(s.owned[k]||0)*v;return p*cpsMult()*frenzyMul();}
-function clickVal(){return (s.click*comboMult()*frenzyMul());}
+function pps(){let p=0;for(const [k,,,v] of buildings)p+=(s.owned[k]||0)*v;return p*cpsMult()*frenzyMul()*(s.cheatBoost||1);}
+function clickVal(){return (s.click*comboMult()*frenzyMul()*(s.cheatBoost||1));}
 
 async function save(cloud=true){s.last=Date.now();localStorage.setItem(KEY,JSON.stringify(s));if(cloud){const sync=window.InstantSync||await import('./instant.js').then(()=>window.InstantSync).catch(()=>null);if(sync)sync.saveProgress('snus-clicker',s).catch(()=>{});}}
 function load(){try{const j=JSON.parse(localStorage.getItem(KEY)||'null');if(j)s={...s,...j};}catch{}}
@@ -185,7 +185,8 @@ prestigeBtn.onclick=()=>{const gain=Math.floor(Math.sqrt(s.snus/5e6));if(gain<1)
 
 buy1.onclick=()=>{buy='1';render()}; buy10.onclick=()=>{buy='10';render()}; buy100.onclick=()=>{buy='100';render()}; buyMAX.onclick=()=>{buy='max';render()};
 save.onclick=()=>save(true);
-reset.onclick=()=>{if(confirm('Reset Snus Clicker MAX?')){localStorage.removeItem(KEY);location.reload();}};
+reset.onclick=()=>{if(confirm('Reset Snus Clicker?')){localStorage.removeItem(KEY);location.reload();}};
+codeBtn.onclick=()=>{const c=prompt('Enter secret code:','');if((c||'').trim()==='SAVA100'){s.cheatBoost=100;news.textContent='100x boost enabled.';render();save(true);}else if((c||'').trim()==='SAVAOFF'){s.cheatBoost=1;news.textContent='Boost disabled.';render();save(true);}else{alert('Invalid code');}};
 
 for(const t of document.querySelectorAll('.tab')) t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active')); t.classList.add('active'); document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); document.getElementById(t.dataset.v).classList.add('active');};
 
