@@ -27,7 +27,7 @@
 
     <section class="panel">
       <div><strong>Player:</strong> <span id="playerName"></span> <button id="changeName">Change</button></div>
-      <div class="muted">Global leaderboard is now shared across players.</div>
+      <div class="muted">Global leaderboard is now shared across players. <span id="cloudStatus">Cloud: checking...</span></div>
       <div style="margin-top:8px"><strong>Global Top (all games)</strong><ol id="leader"></ol></div>
     </section>
 
@@ -50,7 +50,7 @@ function db(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch{retur
 function save(v){localStorage.setItem(KEY,JSON.stringify(v));}
 function ensure(){
   const d=db();
-  const signed=localStorage.getItem(CUR_KEY)||'';
+  const signed=localStorage.getItem(CUR_KEY)||localStorage.getItem('sava_last_user_v1')||'';
   if(signed){ d.player=signed; save(d); return d; }
   if(!d.player){
     let n=prompt('Enter your player name for Sava Games leaderboard:','Player');
@@ -65,8 +65,11 @@ async function render(){const d=ensure(); document.getElementById('playerName').
   try{
     let boards=null;
     if(window.InstantSync){
+      const st=await window.InstantSync.cloudStatus();
+      document.getElementById('cloudStatus').textContent='Cloud: '+st.text;
       boards=await window.InstantSync.fetchBoards(['tetris','dodge','snake','pong','clicker','memory','snus']);
     }else{
+      document.getElementById('cloudStatus').textContent='Cloud: Local fallback';
       const r=await fetch('/api/leaderboard');
       const j=await r.json();
       boards=j.boards||{};

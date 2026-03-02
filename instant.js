@@ -12,6 +12,7 @@ const schema = i.schema({
     scores: i.entity({ game: i.string(), name: i.string(), score: i.number(), createdAt: i.date() }),
     follows: i.entity({ follower: i.string(), target: i.string(), createdAt: i.date() }),
     comments: i.entity({ profile: i.string(), author: i.string(), text: i.string(), createdAt: i.date() }),
+    progress: i.entity({ owner: i.string(), scope: i.string(), data: i.string(), updatedAt: i.date() }),
   },
 });
 
@@ -61,7 +62,19 @@ const api = {
   },
 
   async createOrLogin(username,password){ return this.login(username,password).catch(()=>this.register(username,password)); },
-  async getCurrentUser(){ const cur=localStorage.getItem('sava_current_user_v1')||''; return cur?findUserByName(cur):null; },
+  async getCurrentUser(){
+    const cur=localStorage.getItem('sava_current_user_v1')||'';
+    if(cur){
+      const u = await findUserByName(cur);
+      if(u) return u;
+    }
+    const last = localStorage.getItem('sava_last_user_v1')||'';
+    if(last){
+      const u = await findUserByName(last);
+      if(u){ localStorage.setItem('sava_current_user_v1',u.username); return u; }
+    }
+    return null;
+  },
 
   async saveProfile(username, patch) {
     const u = await findUserByName(username); if (!u) throw new Error('User not found');
@@ -126,6 +139,32 @@ const api = {
   async fetchComments(profile){
     const d = await queryOnce({ comments:{} });
     return (d?.comments||[]).filter(c=>c.profile?.toLowerCase()===String(profile).toLowerCase()).sort((a,b)=>Number(b.createdAt||0)-Number(a.createdAt||0)).slice(0,40);
+  },
+
+  async cloudStatus(){
+    try{ await queryOnce({ users:{} }, 3500); return { ok:true, text:'Connected' }; }
+    catch{ return { ok:false, text:'Offline / retrying' }; }
+  },
+
+  async saveProgress(scope, dataObj){
+    const owner = localStorage.getItem('sava_current_user_v1') || localStorage.getItem('sava_last_user_v1') || 'Player';
+    const d = await queryOnce({ progress:{} });
+    const row = (d?.progress||[]).find(p=>String(p.owner||'').toLowerCase()===owner.toLowerCase() && p.scope===scope);
+    const payload = JSON.stringify(dataObj||{});
+    if(row){
+      await db.transact(db.tx.progress[row.id].update({ data: payload, updatedAt: Date.now() }));
+    }else{
+      await db.transact(db.tx.progress[id()].update({ owner, scope, data: payload, updatedAt: Date.now() }));
+    }
+    return true;
+  },
+
+  async loadProgress(scope){
+    const owner = localStorage.getItem('sava_current_user_v1') || localStorage.getItem('sava_last_user_v1') || 'Player';
+    const d = await queryOnce({ progress:{} });
+    const row = (d?.progress||[]).find(p=>String(p.owner||'').toLowerCase()===owner.toLowerCase() && p.scope===scope);
+    if(!row?.data) return null;
+    try{return JSON.parse(row.data);}catch{return null;}
   }
 };
 
