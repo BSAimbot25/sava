@@ -1,1 +1,195 @@
-<!doctype html><html lang='en'><head><meta charset='UTF-8'/><meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'/><title>Snus Clicker MAX</title><style>html,body{margin:0;background:#0a0f1f;color:#fff;font-family:system-ui;touch-action:manipulation;-webkit-text-size-adjust:100%}*{user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}.wrap{width:min(1280px,calc(100% - 18px));margin:10px auto}.top{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center}.btn{background:#ffe700;color:#111;padding:8px 12px;border-radius:999px;font-weight:900;border:0;text-decoration:none;cursor:pointer}.hud{display:flex;gap:8px;flex-wrap:wrap}.pill{background:#171f3a;border:1px solid #2a3357;border-radius:999px;padding:6px 10px}.grid{display:grid;grid-template-columns:1.04fr .96fr;gap:12px;margin-top:10px}.panel{background:#171f3a;border:1px solid #2a3357;border-radius:14px;padding:12px}.big{min-height:520px;display:grid;place-items:center;position:relative;overflow:hidden}.snus{width:min(78vw,390px);aspect-ratio:1/1;border-radius:50%;border:6px solid #fff3;box-shadow:0 12px 35px #0008;cursor:pointer;transition:transform .06s ease,filter .08s}.snus:active{transform:scale(.95)}.float{position:absolute;font-weight:900;color:#00ffc8;text-shadow:0 2px 8px #000;pointer-events:none;animation:r .72s ease forwards}@keyframes r{to{opacity:0;transform:translateY(-45px)}}.shop{max-height:450px;overflow:auto;display:grid;gap:8px}.item{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;background:#101833;border:1px solid #2b3762;border-radius:10px;padding:10px}.b{border:0;border-radius:10px;padding:8px 10px;font-weight:900;cursor:pointer}.buy-ok{background:#00ffc8;color:#062d24;box-shadow:0 0 14px rgba(0,255,200,.35)}.buy-no{background:#4a536d;color:#c6d0f5}.muted{opacity:.82;font-size:.9rem}.bar{height:10px;background:#101833;border:1px solid #2b3762;border-radius:999px;overflow:hidden}.fill{height:100%;background:linear-gradient(90deg,#00ffc8,#5dffd8);width:0%}.row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.tag{background:#101833;border:1px solid #2b3762;border-radius:8px;padding:4px 8px;font-size:.82rem}.ach{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.a{background:#101833;border:1px solid #2b3762;border-radius:10px;padding:8px;font-size:.9rem}.ok{border-color:#00ffc8}.tap{background:#101833;border:1px solid #2b3762;border-radius:10px;padding:8px}.tap h4{margin:0 0 6px}.cost{font-size:.83rem;color:#b9c6ff}.good{color:#7dffba}.bad{color:#ff9da1}.maxInfo{font-size:.82rem;color:#9dd7ff}.prestigeGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.pCard{background:#0f1738;border:1px solid #2a3357;border-radius:10px;padding:8px}.pCard h5{margin:0 0 6px;font-size:.9rem}@media(max-width:980px){.grid{grid-template-columns:1fr}.big{min-height:340px}.prestigeGrid{grid-template-columns:1fr}}</style></head><body><div class='wrap'><div class='top'><a class='btn' href='./games.html'>← Menu</a><a class='btn' href='./leaderboard.html?game=snus'>Leaderboard</a><div class='hud'><div class='pill'>Snus: <b id='snus'>0</b></div><div class='pill'>Click: <b id='pc'>1</b></div><div class='pill'>Sec: <b id='ps'>0</b></div><div class='pill'>Combo: <b id='combo'>1.00x</b></div><div class='pill'>Prestige Pts: <b id='pp'>0</b></div><div class='pill'>Cloud: <b id='cloud'>...</b></div></div><div><button class='btn' id='save'>Save</button> <button class='btn' id='reset'>Reset</button></div></div><div class='grid'><section class='panel big' id='play'><img id='sn' class='snus' src='./can.jpg' alt='snus'><div style='position:absolute;left:12px;bottom:12px;right:12px'><div class='bar'><div class='fill' id='cmb'></div></div><div class='muted'>Rapid taps build combo • Gold can jackpot • Frenzy multiplies all</div></div></section><section class='panel'><h3 style='margin:0'>Tap Lab</h3><div class='row'><div class='tap'><h4>+1 Tap</h4><div class='cost' id='tap1cost'></div><button class='b' id='tap1'>Buy</button></div><div class='tap'><h4>+10 Tap</h4><div class='cost' id='tap10cost'></div><button class='b' id='tap10'>Buy</button></div><div class='tap'><h4>+50 Tap</h4><div class='cost' id='tap50cost'></div><button class='b' id='tap50'>Buy</button></div></div><div class='row'><button class='b' id='frenzy'>Frenzy x3 (10s)</button><button class='b' id='prestigeBtn'>Prestige Convert</button><span class='tag' id='daily'>Daily reward: checking...</span><span class='tag' id='frCd'>Frenzy: Ready</span></div><h3>Prestige Upgrades</h3><div class='prestigeGrid'><div class='pCard'><h5>Legacy Fingers</h5><div class='cost' id='pu1c'></div><button class='b' id='pu1'>Buy</button></div><div class='pCard'><h5>Legacy Machines</h5><div class='cost' id='pu2c'></div><button class='b' id='pu2'>Buy</button></div><div class='pCard'><h5>Legacy Combo</h5><div class='cost' id='pu3c'></div><button class='b' id='pu3'>Buy</button></div></div><h3>Shop</h3><div class='row'><span class='tag'>Buy mode</span><button class='b' id='buy1'>x1</button><button class='b' id='buy10'>x10</button><button class='b' id='buy100'>x100</button><button class='b' id='buyMAX'>MAX</button><span class='maxInfo' id='maxInfo'></span></div><div class='shop' id='shop'></div><h3>Achievements</h3><div class='ach' id='ach'></div></section></div></div><script type='module' src='./instant.js'></script><script>document.addEventListener('dblclick',e=>e.preventDefault(),{passive:false});const KEY='sava_snus_clicker_max_v3';const me=()=>localStorage.getItem('sava_current_user_v1')||localStorage.getItem('sava_last_user_v1')||'Player';const fmt=n=>n<1e3?Math.floor(n).toLocaleString():n<1e6?(n/1e3).toFixed(1)+'K':n<1e9?(n/1e6).toFixed(1)+'M':n<1e12?(n/1e9).toFixed(1)+'B':(n/1e12).toFixed(1)+'T';const items=[['fingers','Sticky Fingers',15,.25],['runner','Snus Runner',160,1.8],['shop','Corner Shop',1800,13],['truck','Snus Truck',21000,74],['factory','Snus Factory',250000,430],['empire','Snus Empire',3300000,2800],['planet','Snus Planet',42000000,18000]];let s={snus:0,click:1,owned:{},combo:0,last:Date.now(),prestigePts:0,prestigeBuys:{p1:0,p2:0,p3:0},frenzyUntil:0,frenzyCd:0,lastDaily:0};let buy='1',last=0,saveT=0,scoreT=0;const cst=(b,n)=>Math.floor(b*Math.pow(1.15,n||0));const sumCost=(b,n,q)=>{let t=0;for(let i=0;i<q;i++)t+=cst(b,(n||0)+i);return t};function maxAffordable(base,owned,money){let n=0,c=0;while(true){const nx=cst(base,(owned||0)+n);if(c+nx>money)break;c+=nx;n++;if(n>5000)break;}return {n,c};}const pCost=(k)=>{const n=s.prestigeBuys[k]||0;const b={p1:1,p2:2,p3:3}[k];return Math.floor(b*Math.pow(1.7,n));};const pFingerMult=()=>1+(s.prestigeBuys.p1||0)*0.25;const pAutoMult=()=>1+(s.prestigeBuys.p2||0)*0.35;const pComboMult=()=>1+(s.prestigeBuys.p3||0)*0.15;const frenzyMul=()=>Date.now()<s.frenzyUntil?3:1;const pps=()=>{let p=0;for(const [k,,,v] of items)p+=(s.owned[k]||0)*v;return p*pAutoMult()*frenzyMul()};const click=()=>s.click*pFingerMult()*(1+Math.min(2.8,s.combo*0.02)*pComboMult())*frenzyMul();async function save(cloud=true){s.last=Date.now();localStorage.setItem(KEY,JSON.stringify(s));if(cloud){const sync=window.InstantSync||await import('./instant.js').then(()=>window.InstantSync).catch(()=>null);if(sync)sync.saveProgress('snus-clicker',s).catch(()=>{});}}function load(){try{const j=JSON.parse(localStorage.getItem(KEY)||'null');if(j)s={...s,...j,prestigeBuys:{p1:0,p2:0,p3:0,...(j.prestigeBuys||{})}};}catch{}}function puff(v,x,y){const e=document.createElement('div');e.className='float';e.textContent='+'+fmt(v);e.style.left=x+'px';e.style.top=y+'px';play.appendChild(e);setTimeout(()=>e.remove(),740)}function paintBtn(btn,ok){btn.className='b '+(ok?'buy-ok':'buy-no');btn.disabled=!ok;}function hud(){snus.textContent=fmt(s.snus);pc.textContent=fmt(click());ps.textContent=pps().toFixed(1);combo.textContent=(1+Math.min(2.8,s.combo*0.02)).toFixed(2)+'x';pp.textContent=s.prestigePts;cmb.style.width=Math.min(100,s.combo*3.5)+'%';const rem=Math.max(0,Math.ceil((s.frenzyCd-Date.now())/1000));frCd.textContent='Frenzy: '+(rem?rem+'s':'Ready');}function buyQty(base,owned,money){if(buy==='max') return maxAffordable(base,owned,money);const q=Number(buy);return {n:q,c:sumCost(base,owned,q)};}function shopR(){shop.innerHTML='';for(const [k,n,b,v] of items){const have=s.owned[k]||0;const q=buyQty(b,have,s.snus);const d=document.createElement('div');d.className='item';d.innerHTML=`<div><b>${n} x${have}</b><div class='muted'>+${v}/s</div><div class='cost'>Qty: ${q.n} • Total Cost: ${fmt(q.c)}</div></div><button class='b'>Buy</button>`;const bt=d.querySelector('button');paintBtn(bt,q.n>0&&s.snus>=q.c);bt.onclick=()=>{const q2=buyQty(b,s.owned[k]||0,s.snus);if(q2.n<=0||s.snus<q2.c)return;s.snus-=q2.c;s.owned[k]=(s.owned[k]||0)+q2.n;render();};shop.appendChild(d);}maxInfo.textContent=buy==='max'?'MAX buys highest affordable qty':'';}function achR(){const list=[['First Tap',s.snus>=1],['100K',s.snus>=1e5],['10M',s.snus>=1e7],['1B',s.snus>=1e9],['Factory',(s.owned.factory||0)>=1],['Planet',(s.owned.planet||0)>=1],['Prestige Started',s.prestigePts>0],['Combo 50',s.combo>=50],['Mega Click',click()>=10000]];ach.innerHTML='';for(const [n,ok] of list){const d=document.createElement('div');d.className='a'+(ok?' ok':'');d.textContent=(ok?'🏆 ':'⬜ ')+n;ach.appendChild(d)}}function tapsAndPrestigeUI(){const c1=Math.floor(200*(1+s.click*0.01)),c10=Math.floor(3000*(1+s.click*0.01)),c50=Math.floor(42000*(1+s.click*0.01));tap1cost.innerHTML=`Cost: <span class='${s.snus>=c1?'good':'bad'}'>${fmt(c1)}</span>`;tap10cost.innerHTML=`Cost: <span class='${s.snus>=c10?'good':'bad'}'>${fmt(c10)}</span>`;tap50cost.innerHTML=`Cost: <span class='${s.snus>=c50?'good':'bad'}'>${fmt(c50)}</span>`;paintBtn(tap1,s.snus>=c1);paintBtn(tap10,s.snus>=c10);paintBtn(tap50,s.snus>=c50);paintBtn(frenzy,Date.now()>=s.frenzyCd);const cP1=pCost('p1'),cP2=pCost('p2'),cP3=pCost('p3');pu1c.textContent=`Cost: ${cP1} PP (owned ${s.prestigeBuys.p1||0})`;pu2c.textContent=`Cost: ${cP2} PP (owned ${s.prestigeBuys.p2||0})`;pu3c.textContent=`Cost: ${cP3} PP (owned ${s.prestigeBuys.p3||0})`;paintBtn(pu1,s.prestigePts>=cP1);paintBtn(pu2,s.prestigePts>=cP2);paintBtn(pu3,s.prestigePts>=cP3);return {c1,c10,c50,cP1,cP2,cP3};}function render(){hud();shopR();tapsAndPrestigeUI();achR();save(false)}async function boot(){load();const sync=window.InstantSync||await import('./instant.js').then(()=>window.InstantSync).catch(()=>null);if(sync){try{const st=await sync.cloudStatus();cloud.textContent=st.text;const remote=await sync.loadProgress('snus-clicker');if(remote&&Number(remote.snus||0)>Number(s.snus||0))s={...s,...remote};}catch{cloud.textContent='Offline';}}else cloud.textContent='Local';const off=Math.max(0,Math.min(43200,(Date.now()-(s.last||Date.now()))/1000));s.snus+=pps()*off;dailyReward();render();requestAnimationFrame(loop)}function dailyReward(){const day=Math.floor(Date.now()/86400000);if(s.lastDaily!==day){const bonus=Math.max(500,Math.floor(pps()*120+1000));s.snus+=bonus;s.lastDaily=day;daily.textContent='Daily reward claimed: +'+fmt(bonus);}else daily.textContent='Daily reward already claimed';}sn.addEventListener('pointerdown',e=>{const r=sn.getBoundingClientRect();let add=click();if(Math.random()<0.04){add*=8;puff('JACKPOT x8',e.clientX-r.left+r.left-20,e.clientY-r.top+r.top-40);}s.snus+=add;s.combo=Math.min(90,s.combo+3.5);puff(add,e.clientX-r.left+r.left-20,e.clientY-r.top+r.top-20);render();},{passive:true});function loop(ts){if(!last)last=ts;const dt=Math.min(120,ts-last);last=ts;s.snus+=pps()*(dt/1000);s.combo=Math.max(0,s.combo-dt*0.0085);saveT+=dt;scoreT+=dt;if(saveT>5000){save(true);saveT=0}if(scoreT>12000){const sync=window.InstantSync;if(sync)sync.submitScore('snus',me(),Math.floor(s.snus)).catch(()=>{});scoreT=0}hud();tapsAndPrestigeUI();requestAnimationFrame(loop)}function buyTap(cost,add){if(s.snus<cost)return;s.snus-=cost;s.click+=add;render()}tap1.onclick=()=>{const c=Math.floor(200*(1+s.click*0.01));buyTap(c,1)};tap10.onclick=()=>{const c=Math.floor(3000*(1+s.click*0.01));buyTap(c,10)};tap50.onclick=()=>{const c=Math.floor(42000*(1+s.click*0.01));buyTap(c,50)};frenzy.onclick=()=>{if(Date.now()<s.frenzyCd)return;s.frenzyUntil=Date.now()+10000;s.frenzyCd=Date.now()+50000;render();};prestigeBtn.onclick=()=>{const gain=Math.floor(Math.sqrt(s.snus/5e6));if(gain<1)return alert('Need more snus for prestige');if(!confirm('Convert run into '+gain+' Prestige Points?'))return;s.prestigePts+=gain;s.snus=0;s.click=1;s.owned={};s.combo=0;s.frenzyUntil=0;s.frenzyCd=0;render();};pu1.onclick=()=>{const c=pCost('p1');if(s.prestigePts<c)return;s.prestigePts-=c;s.prestigeBuys.p1=(s.prestigeBuys.p1||0)+1;render();};pu2.onclick=()=>{const c=pCost('p2');if(s.prestigePts<c)return;s.prestigePts-=c;s.prestigeBuys.p2=(s.prestigeBuys.p2||0)+1;render();};pu3.onclick=()=>{const c=pCost('p3');if(s.prestigePts<c)return;s.prestigePts-=c;s.prestigeBuys.p3=(s.prestigeBuys.p3||0)+1;render();};buy1.onclick=()=>{buy='1';render()};buy10.onclick=()=>{buy='10';render()};buy100.onclick=()=>{buy='100';render()};buyMAX.onclick=()=>{buy='max';render()};save.onclick=()=>save(true);reset.onclick=()=>{if(confirm('Reset Snus Clicker MAX?')){localStorage.removeItem(KEY);location.reload();}};boot();</script><script type='module'>import { inject } from "https://esm.sh/@vercel/analytics"; inject();</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <title>Snus Clicker MAX</title>
+  <style>
+    html,body{margin:0;background:#0a0f1f;color:#fff;font-family:system-ui;touch-action:manipulation}
+    *{user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+    .wrap{width:min(1300px,calc(100% - 18px));margin:10px auto}
+    .top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:center}
+    .btn{background:#ffe700;color:#111;padding:8px 12px;border-radius:999px;font-weight:900;border:0;text-decoration:none;cursor:pointer}
+    .hud{display:flex;gap:8px;flex-wrap:wrap}.pill{background:#171f3a;border:1px solid #2a3357;border-radius:999px;padding:6px 10px}
+    .grid{display:grid;grid-template-columns:1.02fr .98fr;gap:12px;margin-top:10px}
+    .panel{background:#171f3a;border:1px solid #2a3357;border-radius:14px;padding:12px}
+    .big{min-height:520px;display:grid;place-items:center;position:relative;overflow:hidden}
+    .snus{width:min(78vw,390px);aspect-ratio:1/1;border-radius:50%;border:6px solid #fff3;box-shadow:0 12px 35px #0008;cursor:pointer;transition:transform .06s ease}.snus:active{transform:scale(.95)}
+    .gold{position:absolute;right:20px;top:20px;background:radial-gradient(circle,#fff16f,#ff9800);color:#111;padding:8px 10px;border-radius:999px;font-weight:900;display:none;cursor:pointer;box-shadow:0 0 18px rgba(255,208,0,.8)}
+    .float{position:absolute;font-weight:900;color:#00ffc8;text-shadow:0 2px 8px #000;pointer-events:none;animation:r .72s ease forwards}@keyframes r{to{opacity:0;transform:translateY(-45px)}}
+    .bar{height:10px;background:#101833;border:1px solid #2b3762;border-radius:999px;overflow:hidden}.fill{height:100%;background:linear-gradient(90deg,#00ffc8,#5dffd8);width:0%}
+    .tabs{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap}.tab{background:#101833;border:1px solid #2b3762;color:#fff;padding:6px 10px;border-radius:8px;cursor:pointer}.tab.active{background:#00ffc8;color:#052d24}
+    .view{display:none}.view.active{display:block}
+    .shop{max-height:460px;overflow:auto;display:grid;gap:8px}.item{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;background:#101833;border:1px solid #2b3762;border-radius:10px;padding:10px}
+    .b{border:0;border-radius:10px;padding:8px 10px;font-weight:900;cursor:pointer}.buy-ok{background:#00ffc8;color:#062d24;box-shadow:0 0 14px rgba(0,255,200,.35)}.buy-no{background:#4a536d;color:#c6d0f5}
+    .muted{opacity:.82;font-size:.9rem}.row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.tag{background:#101833;border:1px solid #2b3762;border-radius:8px;padding:4px 8px;font-size:.82rem}
+    .ach{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.a{background:#101833;border:1px solid #2b3762;border-radius:10px;padding:8px;font-size:.9rem}.ok{border-color:#00ffc8}
+    .stat{display:grid;grid-template-columns:1fr auto;padding:6px 0;border-bottom:1px solid #ffffff12}
+    @media(max-width:980px){.grid{grid-template-columns:1fr}.big{min-height:340px}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a class="btn" href="./games.html">← Menu</a>
+    <a class="btn" href="./leaderboard.html?game=snus">Leaderboard</a>
+    <div class="hud">
+      <div class="pill">Snus: <b id="snus">0</b></div>
+      <div class="pill">Click: <b id="pc">1</b></div>
+      <div class="pill">Sec: <b id="ps">0</b></div>
+      <div class="pill">Combo: <b id="combo">1.00x</b></div>
+      <div class="pill">Prestige: <b id="pp">0</b></div>
+      <div class="pill">Cloud: <b id="cloud">...</b></div>
+    </div>
+    <div><button class="btn" id="save">Save</button> <button class="btn" id="reset">Reset</button></div>
+  </div>
+
+  <div class="grid">
+    <section class="panel big" id="play">
+      <img id="sn" class="snus" src="./can.jpg" alt="snus"/>
+      <button id="goldCan" class="gold">GOLD CAN!</button>
+      <div style="position:absolute;left:12px;bottom:12px;right:12px">
+        <div class="bar"><div class="fill" id="cmb"></div></div>
+        <div class="muted" id="news">Welcome to Snus Clicker MAX.</div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="tabs">
+        <button class="tab active" data-v="shopView">Shop</button>
+        <button class="tab" data-v="upgView">Upgrades</button>
+        <button class="tab" data-v="statsView">Stats</button>
+      </div>
+
+      <div id="shopView" class="view active">
+        <div class="row">
+          <span class="tag">Buy mode</span>
+          <button class="b" id="buy1">x1</button><button class="b" id="buy10">x10</button><button class="b" id="buy100">x100</button><button class="b" id="buyMAX">MAX</button>
+          <span class="tag" id="maxInfo"></span>
+        </div>
+        <div class="shop" id="shop"></div>
+      </div>
+
+      <div id="upgView" class="view">
+        <div class="row">
+          <button class="b" id="frenzy">Frenzy x3 (10s)</button>
+          <button class="b" id="prestigeBtn">Prestige Convert</button>
+          <span class="tag" id="frCd">Frenzy: Ready</span>
+        </div>
+        <div class="shop" id="upgrades"></div>
+      </div>
+
+      <div id="statsView" class="view">
+        <div class="stat"><span>Lifetime Snus</span><b id="stLifetime">0</b></div>
+        <div class="stat"><span>Total Clicks</span><b id="stClicks">0</b></div>
+        <div class="stat"><span>Best CPS</span><b id="stBest">0</b></div>
+        <div class="stat"><span>Buildings Owned</span><b id="stBuild">0</b></div>
+        <div class="stat"><span>Daily Reward</span><b id="daily">checking...</b></div>
+        <h4>Achievements</h4>
+        <div class="ach" id="ach"></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script type="module" src="./instant.js"></script>
+<script>
+document.addEventListener('dblclick',e=>e.preventDefault(),{passive:false});
+const KEY='sava_snus_clicker_max_v4';
+const me=()=>localStorage.getItem('sava_current_user_v1')||localStorage.getItem('sava_last_user_v1')||'Player';
+const fmt=n=>n<1e3?Math.floor(n).toLocaleString():n<1e6?(n/1e3).toFixed(1)+'K':n<1e9?(n/1e6).toFixed(1)+'M':n<1e12?(n/1e9).toFixed(1)+'B':(n/1e12).toFixed(1)+'T';
+
+const buildings=[
+ ['finger','Snus Finger',15,0.2],['runner','Runner',120,1.2],['cart','Cart',1200,8],['shop','Shop',12000,48],
+ ['truck','Truck',130000,260],['factory','Factory',1400000,1400],['lab','Lab',20000000,9000],['planet','Planet',320000000,62000]
+];
+const upgrades=[
+ {k:'tapI',n:'Tap I (+1 click)',base:200,type:'click',add:1,req:0},
+ {k:'tapII',n:'Tap II (+5 click)',base:2500,type:'click',add:5,req:10},
+ {k:'tapIII',n:'Tap III (+25 click)',base:30000,type:'click',add:25,req:50},
+ {k:'autoI',n:'Auto I (+25% CPS)',base:6000,type:'cps',mult:1.25,req:20},
+ {k:'autoII',n:'Auto II (+35% CPS)',base:90000,type:'cps',mult:1.35,req:100},
+ {k:'comboI',n:'Combo Booster (+20%)',base:120000,type:'combo',mult:1.2,req:0},
+ {k:'comboII',n:'Combo Booster II (+35%)',base:900000,type:'combo',mult:1.35,req:0}
+];
+
+let s={snus:0,click:1,owned:{},upg:{},combo:0,last:Date.now(),prestige:0,lastDaily:0,frenzyUntil:0,frenzyCd:0,lifetime:0,clicks:0,bestCps:0};
+let buy='1',last=0,saveT=0,scoreT=0,newsT=0;
+const cst=(b,n)=>Math.floor(b*Math.pow(1.15,n||0));
+const sumCost=(b,n,q)=>{let t=0;for(let i=0;i<q;i++)t+=cst(b,(n||0)+i);return t};
+function maxAffordable(base,owned,money){let n=0,c=0;while(true){const nx=cst(base,(owned||0)+n);if(c+nx>money)break;c+=nx;n++;if(n>5000)break;}return {n,c};}
+const frenzyMul=()=>Date.now()<s.frenzyUntil?3:1;
+function cpsMult(){let m=1+s.prestige*0.1;for(const u of upgrades){if(s.upg[u.k]&&u.type==='cps')m*=u.mult;}return m;}
+function comboMult(){let m=1+Math.min(2.8,s.combo*0.02);for(const u of upgrades){if(s.upg[u.k]&&u.type==='combo')m*=u.mult;}return m;}
+function pps(){let p=0;for(const [k,,,v] of buildings)p+=(s.owned[k]||0)*v;return p*cpsMult()*frenzyMul();}
+function clickVal(){return (s.click*comboMult()*frenzyMul());}
+
+async function save(cloud=true){s.last=Date.now();localStorage.setItem(KEY,JSON.stringify(s));if(cloud){const sync=window.InstantSync||await import('./instant.js').then(()=>window.InstantSync).catch(()=>null);if(sync)sync.saveProgress('snus-clicker',s).catch(()=>{});}}
+function load(){try{const j=JSON.parse(localStorage.getItem(KEY)||'null');if(j)s={...s,...j};}catch{}}
+function puff(v,x,y){const e=document.createElement('div');e.className='float';e.textContent='+'+fmt(v);e.style.left=x+'px';e.style.top=y+'px';play.appendChild(e);setTimeout(()=>e.remove(),730)}
+function paintBtn(btn,ok){btn.className='b '+(ok?'buy-ok':'buy-no');btn.disabled=!ok;}
+
+function hud(){snus.textContent=fmt(s.snus);pc.textContent=fmt(clickVal());const cps=pps();ps.textContent=cps.toFixed(1);combo.textContent=comboMult().toFixed(2)+'x';pp.textContent=s.prestige;cmb.style.width=Math.min(100,s.combo*3.5)+'%';s.bestCps=Math.max(s.bestCps,cps);frCd.textContent='Frenzy: '+(Date.now()<s.frenzyCd?Math.ceil((s.frenzyCd-Date.now())/1000)+'s':'Ready');}
+
+function buyQty(base,owned,money){if(buy==='max')return maxAffordable(base,owned,money);const q=Number(buy);return {n:q,c:sumCost(base,owned,q)};}
+
+function renderShop(){shop.innerHTML='';for(const [k,n,b,v] of buildings){const have=s.owned[k]||0;const q=buyQty(b,have,s.snus);const d=document.createElement('div');d.className='item';d.innerHTML=`<div><b>${n} x${have}</b><div class='muted'>+${v}/s each</div><div class='muted'>Qty: ${q.n} • Cost: ${fmt(q.c)}</div></div><button class='b'>Buy</button>`;const bt=d.querySelector('button');paintBtn(bt,q.n>0&&s.snus>=q.c);bt.onclick=()=>{const q2=buyQty(b,s.owned[k]||0,s.snus);if(q2.n<=0||s.snus<q2.c)return;s.snus-=q2.c;s.owned[k]=(s.owned[k]||0)+q2.n;render();};shop.appendChild(d);}maxInfo.textContent=buy==='max'?'MAX active':' ';}
+
+function upgCost(u){const lvl=s.upg[u.k]||0;return Math.floor(u.base*Math.pow(2.2,lvl));}
+function upgUnlocked(u){const total=Object.values(s.owned).reduce((a,b)=>a+(b||0),0);return total>=u.req;}
+function renderUpgrades(){upgradesEl.innerHTML='';for(const u of upgrades){const lvl=s.upg[u.k]||0;const c=upgCost(u);const unlocked=upgUnlocked(u);const d=document.createElement('div');d.className='item';d.innerHTML=`<div><b>${u.n} (Lv ${lvl})</b><div class='muted'>Req buildings: ${u.req}</div><div class='muted'>Cost: ${fmt(c)}</div></div><button class='b'>Buy</button>`;const bt=d.querySelector('button');paintBtn(bt,unlocked&&s.snus>=c);bt.onclick=()=>{if(!unlocked||s.snus<c)return;s.snus-=c;s.upg[u.k]=(s.upg[u.k]||0)+1;if(u.type==='click')s.click+=u.add;render();};upgradesEl.appendChild(d);} }
+
+function renderStats(){stLifetime.textContent=fmt(s.lifetime||0);stClicks.textContent=fmt(s.clicks||0);stBest.textContent=fmt(s.bestCps||0);stBuild.textContent=fmt(Object.values(s.owned).reduce((a,b)=>a+(b||0),0));
+  const list=[['First Tap',s.clicks>=1],['1K Clicks',s.clicks>=1000],['1M Snus',s.snus>=1e6],['1B Snus',s.snus>=1e9],['Factory', (s.owned.factory||0)>=1],['Planet',(s.owned.planet||0)>=1],['Prestiged',s.prestige>0],['Max Combo',s.combo>=80]];
+  ach.innerHTML='';for(const [n,ok] of list){const e=document.createElement('div');e.className='a'+(ok?' ok':'');e.textContent=(ok?'🏆 ':'⬜ ')+n;ach.appendChild(e);} }
+
+function render(){hud();renderShop();renderUpgrades();renderStats();save(false);}
+
+function dailyReward(){const day=Math.floor(Date.now()/86400000);if(s.lastDaily!==day){const bonus=Math.max(500,Math.floor(pps()*120+1000));s.snus+=bonus;s.lastDaily=day;daily.textContent='claimed +'+fmt(bonus);}else daily.textContent='already claimed';}
+
+function newsTick(){
+  const msgs=['Snus market booming.','Factories want more workers.','Combo is king.','Prestige makes future runs faster.','Golden can can pop at any time.'];
+  news.textContent=msgs[(Math.random()*msgs.length)|0];
+}
+
+async function boot(){
+  load();
+  const sync=window.InstantSync||await import('./instant.js').then(()=>window.InstantSync).catch(()=>null);
+  if(sync){try{const st=await sync.cloudStatus();cloud.textContent=st.text;const remote=await sync.loadProgress('snus-clicker');if(remote&&Number(remote.snus||0)>Number(s.snus||0))s={...s,...remote};}catch{cloud.textContent='Offline';}} else cloud.textContent='Local';
+  const off=Math.max(0,Math.min(43200,(Date.now()-(s.last||Date.now()))/1000));s.snus+=pps()*off;
+  dailyReward();render();requestAnimationFrame(loop);
+}
+
+sn.addEventListener('pointerdown',e=>{
+  const add=clickVal(); s.snus+=add; s.lifetime=(s.lifetime||0)+add; s.clicks=(s.clicks||0)+1; s.combo=Math.min(95,s.combo+3.5);
+  if(Math.random()<0.04){ goldCan.style.display='inline-block'; }
+  puff(add,e.clientX-20,e.clientY-20); render();
+},{passive:true});
+
+goldCan.onclick=()=>{const jackpot=Math.max(1000,Math.floor(pps()*120));s.snus+=jackpot;s.lifetime=(s.lifetime||0)+jackpot;goldCan.style.display='none';news.textContent='GOLD CAN jackpot +'+fmt(jackpot)+'!';render();};
+
+function loop(ts){
+  if(!last)last=ts; const dt=Math.min(120,ts-last); last=ts;
+  const gain=pps()*(dt/1000); s.snus+=gain; s.lifetime=(s.lifetime||0)+gain;
+  s.combo=Math.max(0,s.combo-dt*0.0085);
+  saveT+=dt; scoreT+=dt; newsT+=dt;
+  if(saveT>5000){save(true);saveT=0}
+  if(scoreT>12000){const sync=window.InstantSync;if(sync)sync.submitScore('snus',me(),Math.floor(s.snus)).catch(()=>{});scoreT=0}
+  if(newsT>9000){newsTick();newsT=0}
+  hud(); renderStats(); requestAnimationFrame(loop);
+}
+
+frenzy.onclick=()=>{if(Date.now()<s.frenzyCd)return;s.frenzyUntil=Date.now()+10000;s.frenzyCd=Date.now()+50000;render();};
+prestigeBtn.onclick=()=>{const gain=Math.floor(Math.sqrt(s.snus/5e6));if(gain<1)return alert('Need more snus for prestige');if(!confirm('Convert run for '+gain+' prestige levels?'))return;s.prestige+=gain;s.snus=0;s.click=1;s.owned={};s.upg={};s.combo=0;s.frenzyUntil=0;s.frenzyCd=0;render();};
+
+buy1.onclick=()=>{buy='1';render()}; buy10.onclick=()=>{buy='10';render()}; buy100.onclick=()=>{buy='100';render()}; buyMAX.onclick=()=>{buy='max';render()};
+save.onclick=()=>save(true);
+reset.onclick=()=>{if(confirm('Reset Snus Clicker MAX?')){localStorage.removeItem(KEY);location.reload();}};
+
+for(const t of document.querySelectorAll('.tab')) t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active')); t.classList.add('active'); document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); document.getElementById(t.dataset.v).classList.add('active');};
+
+boot();
+</script>
+<script type='module'>import { inject } from "https://esm.sh/@vercel/analytics"; inject();</script>
+</body>
+</html>
