@@ -41,7 +41,7 @@
       <div class="pill">Prestige: <b id="pp">0</b></div>
       <div class="pill">Cloud: <b id="cloud">...</b></div>
     </div>
-    <div><button class="btn" id="save">Save</button> <button class="btn" id="reset">Reset</button></div>
+    <div><button class="btn" id="reset">Reset</button></div>
   </div>
 
   <div class="grid">
@@ -184,7 +184,6 @@ frenzy.onclick=()=>{if(Date.now()<s.frenzyCd)return;s.frenzyUntil=Date.now()+100
 prestigeBtn.onclick=()=>{const gain=Math.floor(Math.sqrt(s.snus/5e6));if(gain<1)return alert('Need more snus for prestige');if(!confirm('Convert run for '+gain+' prestige levels?'))return;s.prestige+=gain;s.snus=0;s.click=1;s.owned={};s.upg={};s.combo=0;s.frenzyUntil=0;s.frenzyCd=0;render();};
 
 buy1.onclick=()=>{buy='1';render()}; buy10.onclick=()=>{buy='10';render()}; buy100.onclick=()=>{buy='100';render()}; buyMAX.onclick=()=>{buy='max';render()};
-save.onclick=()=>save(true);
 reset.onclick=()=>{if(confirm('Reset Snus Clicker?')){localStorage.removeItem(KEY);location.reload();}};
 
 for(const t of document.querySelectorAll('.tab')) t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active')); t.classList.add('active'); document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); document.getElementById(t.dataset.v).classList.add('active');};
