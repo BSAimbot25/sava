@@ -13,6 +13,7 @@ const schema = i.schema({
     follows: i.entity({ follower: i.string(), target: i.string(), createdAt: i.date() }),
     comments: i.entity({ profile: i.string(), author: i.string(), text: i.string(), createdAt: i.date() }),
     progress: i.entity({ owner: i.string(), scope: i.string(), data: i.string(), updatedAt: i.date() }),
+    messages: i.entity({ from: i.string(), to: i.string(), text: i.string(), createdAt: i.date(), read: i.boolean() }),
   },
 });
 
@@ -193,6 +194,37 @@ const api = {
     const row = (d?.progress||[]).find(p=>String(p.owner||'').toLowerCase()===owner.toLowerCase() && p.scope===scope);
     if(!row?.data) return null;
     try{return JSON.parse(row.data);}catch{return null;}
+  },
+
+  async sendMessage(to, text){
+    const from = localStorage.getItem('sava_current_user_v1') || localStorage.getItem('sava_last_user_v1') || 'Player';
+    const t = String(text||'').trim().slice(0,1000);
+    if(!to || !t) return false;
+    await db.transact(db.tx.messages[id()].update({ from, to, text:t, createdAt:Date.now(), read:false }));
+    return true;
+  },
+
+  async fetchConversations(){
+    const me = localStorage.getItem('sava_current_user_v1') || localStorage.getItem('sava_last_user_v1') || 'Player';
+    const d = await queryOnce({ messages:{} });
+    const msgs=(d?.messages||[]).filter(m=>String(m.from||'').toLowerCase()===me.toLowerCase()||String(m.to||'').toLowerCase()===me.toLowerCase());
+    const map=new Map();
+    for(const m of msgs){
+      const other = String(m.from||'').toLowerCase()===me.toLowerCase()?m.to:m.from;
+      const prev=map.get(other);
+      if(!prev || Number(m.createdAt||0)>Number(prev.createdAt||0)) map.set(other,m);
+    }
+    return Array.from(map.entries()).map(([other,m])=>({other,lastText:m.text,lastAt:m.createdAt,unread: String(m.to||'').toLowerCase()===me.toLowerCase() && !m.read})).sort((a,b)=>Number(b.lastAt||0)-Number(a.lastAt||0));
+  },
+
+  async fetchMessages(withUser){
+    const me = localStorage.getItem('sava_current_user_v1') || localStorage.getItem('sava_last_user_v1') || 'Player';
+    const d = await queryOnce({ messages:{} });
+    const msgs=(d?.messages||[]).filter(m=>{
+      const a=String(m.from||'').toLowerCase(), b=String(m.to||'').toLowerCase(), w=String(withUser||'').toLowerCase(), meL=me.toLowerCase();
+      return (a===meL&&b===w)||(a===w&&b===meL);
+    }).sort((a,b)=>Number(a.createdAt||0)-Number(b.createdAt||0));
+    return msgs.slice(-200);
   }
 };
 
